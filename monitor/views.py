@@ -134,15 +134,18 @@ class WordsView(BaseView):
     template_name = 'words.html'
 
     def mod_content(self, ): 
+        words =  Words.objects.all()
+        for w in words:
+            w.count = AlarmRecord.objects.filter(word=w.id).count()
+
         context = {}
+        context['words_active'] = 'active'
+        context['words'] = words
         page_html = self.include(self.template_name, context)
         return page_html
 
     def get(self, request, ):
-        words =  Words.objects.all()
         context = {}
-        context['words_active'] = 'active'
-        context['words'] = words
         page = self.make(request, context)
         return HttpResponse(page)
 
@@ -161,11 +164,6 @@ def delete_word(request, pk):
     word = get_object_or_404(Words, id=pk)
     word.delete()
     return HttpResponseRedirect(reverse("words"))
-
-class WordDetailView(BaseView, ):
-
-    def get(self, request, pk):
-        return HttpResponseRedirect(reverse("words"))
 
 
 
@@ -191,7 +189,7 @@ class RecordViews(BaseView):
     def mod_content(self, ):
         records = AlarmRecord.objects.exclude(word=None)
         for r in records:
-            r.word = Words.objects.filter(id=r.word)[0].word
+            r.word_name = Words.objects.filter(id=r.word)[0].word
         page_html = self.include(
             self.template_name, {"records": records})
         return page_html
@@ -203,7 +201,22 @@ class RecordViews(BaseView):
         return HttpResponse(page)
 
 
+class Word2Record(BaseView):
+    template_name = "word2records.html"
 
+    def mod_content(self, ):
+        records = AlarmRecord.objects.filter(word=int(self.pk))
+        word = Words.objects.filter(id=self.pk)[0].word
+        page_html = self.include(
+            self.template_name, {"records": records, "word": word})
+        return page_html
+
+    def get(self, request, pk):
+        context = {}
+        self.pk = pk
+        context['records_active'] = 'active'
+        page = self.make(request, context)
+        return HttpResponse(page)
 
 
 
