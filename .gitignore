@@ -1,0 +1,4 @@
+*.pyc
+erl_crash.dump
+settings.py
+.DS_Store
