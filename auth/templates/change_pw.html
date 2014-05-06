@@ -1,0 +1,61 @@
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="煎茶">
+    <meta name="author" content="Mark">
+    <link href="{{STATIC_PREFIX}}bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+    <link href="{{STATIC_PREFIX}}bootstrap/dist/css/dashboard.css" rel="stylesheet">
+    {{css_set}}
+    <script src="{{STATIC_PREFIX}}jquery/jquery.js"></script>
+    <script src="{{STATIC_PREFIX}}bootstrap/dist/js/bootstrap.js"></script>
+
+    <!-- <link rel="shortcut icon" href="../../assets/ico/favicon.ico"> -->
+
+    <title>登录煎茶</title>
+
+    <!-- Bootstrap core CSS -->
+
+    <!-- Custom styles for this template -->
+    <link href="{{STATIC_PREFIX}}css/signin.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy this line! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="container">
+
+      <form class="form-signin" role="form" method="POST" action="{%url 'change_pw'%}">
+        <h2 class="form-signin-heading">修改密码</h2>
+          {%csrf_token%}
+          <input type="password" class="form-control" placeholder="OldPassword" name="oldpw" required>
+          <input type="password" class="form-control" placeholder="NewPassword" name="newpw" required>
+          <input type="password" class="form-control" placeholder="ComfirmPassword" name="comfirmpw" required>
+
+          <!-- <label class="checkbox"> -->
+          <!-- <input type="checkbox" value="remember-me"> 记住我 -->
+        </label>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">保存 </button>
+        <a class="btn btn-lg btn-primary btn-block" href="{%url 'home'%}">取消 </a>
+      </form>
+
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+  </body>
+</html>

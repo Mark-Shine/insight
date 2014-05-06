@@ -24,6 +24,8 @@ from django.core.urlresolvers import reverse
 from monitor.templatetags.ref import RefNode
 from monitor.models import Words
 from monitor.models import AlarmRecord
+from auth.models import Account
+
 
 class ViewObject(View):
     """
@@ -220,8 +222,23 @@ class Word2Record(BaseView):
 
 
 
+class AccountAdminView(BaseView):
+    template_name = "account_admin.html"    
 
+    def get(self, request):
+        context = {}
+        context['admin_active'] = 'active'
+        page = self.make(request, context)
+        return HttpResponse(page)
 
+    def mod_content(self,):
+        accounts_query = Account.objects.all()
+        page_html = self.include(
+            self.template_name, {"accounts": accounts_query})
+        return page_html
+
+    def post(self, request):
+        pass
 
 
 

@@ -23,7 +23,7 @@
           <td>{{w.word}}</td>
           <td> {{w.count | default:" 0"}}</td>
           <td><a href="{%url 'word2recod' pk=w.id %}">查看</a> <a href="{%url 'delete_word' pk=w.id %}">删除</a></td>
-        </tr>
+        </tr>g
         {% empty %}
         {% endfor %}
       </tbody>
