@@ -11,8 +11,10 @@ class Account(models.Model):
     email = models.EmailField(blank=True,)
     tel = models.CharField(max_length=13, blank=True) 
     #是否开启邮件、短信通知  
-    email_enable = models.IntegerField(blank=True,)
-    sms_enable = models.IntegerField(blank=True,)
+    email_enable = models.IntegerField(blank=True, null=True)
+    sms_enable = models.IntegerField(blank=True, null=True)
+    create_time = models.DateTimeField(null=True, blank=True,
+        auto_now=True,)
 
 class ActionRecord(models.Model):
     # rd_name = models.CharField()

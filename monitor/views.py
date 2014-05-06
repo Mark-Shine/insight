@@ -25,7 +25,7 @@ from monitor.templatetags.ref import RefNode
 from monitor.models import Words
 from monitor.models import AlarmRecord
 from auth.models import Account
-
+from auth.forms import AccountForm
 
 class ViewObject(View):
     """
@@ -233,12 +233,23 @@ class AccountAdminView(BaseView):
 
     def mod_content(self,):
         accounts_query = Account.objects.all()
+        print accounts_query
         page_html = self.include(
             self.template_name, {"accounts": accounts_query})
         return page_html
 
     def post(self, request):
-        pass
+        form = AccountForm(request.POST)
+        if not form.is_valid():
+            return HttpResponse('请填写完整')
+        cleaned_data = form.cleaned_data
+        try:
+            Account.objects.create(**cleaned_data)
+        except Exception, e:
+            print e
+        return HttpResponseRedirect(reverse('admin'))
+
+
 
 
 

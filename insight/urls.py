@@ -13,7 +13,8 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', HomeView.as_view(), name="home"),
-    url(r'^login$', LoginView.as_view, name="login"),
+    url(r'^login$', LoginView.as_view(), name="login"),
+    url(r'^logoff$', 'auth.views.logoff', name='logoff'),
     url(r'^test$', recieve_data, name="test"),
     url(r'^records$', RecordViews.as_view(), name="records"),
     url(r'^words', include('monitor.urls')),

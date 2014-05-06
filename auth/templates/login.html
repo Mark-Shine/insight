@@ -39,7 +39,7 @@
 
       <form class="form-signin" role="form" method="POST" action="{%url 'login'%}">
         <h2 class="form-signin-heading">请登录</h2>
-          {%csrf_token%}
+          {% csrf_token %}
           <input name="email" type="email" class="form-control" placeholder="Email address" required autofocus>
           <input name="password" type="password" class="form-control" placeholder="Password" required>
 
