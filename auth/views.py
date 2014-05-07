@@ -17,26 +17,27 @@ from django.core.urlresolvers import reverse
 from django.forms.models import model_to_dict
 # Create your views here.
 from .models import Account
-from .middlewares import shortcircuitmiddleware
-
+from .utils import encrypt_password, validate_password
 
 class LoginView(View):
     template_name = 'login.html'
 
-    # @shortcircuitmiddleware
     def get(self, request):
         request_context = RequestContext(request, {})
         page = render_to_string(self.template_name, {}, context_instance=request_context)
         return HttpResponse(page)
         
-    # @shortcircuitmiddleware
     def post(self, request):
         if request.method == "POST":
             email = request.POST.get('email')
             password = request.POST.get('password')
-            user_query = Account.objects.filter(email=email, password=password)
+
+            user_query = Account.objects.filter(email=email)
             if user_query:
                 user= model_to_dict(user_query[0])
+                is_pass = validate_password(user['password'], password)
+                if not is_pass:
+                    return HttpResponseRedirect(reverse('login'))
                 request.session['user'] = user
                 request.user = user
                 return HttpResponseRedirect(reverse('home'))
@@ -62,22 +63,30 @@ class ChangePasswordView(View):
 
     template_name = 'change_pw.html'
     def get(self, request):
-        page = render_to_string(self.template_name, {}, context_instance={})
+        page = render_to_string(self.template_name, {}, context_instance=RequestContext(request, {}))
         return HttpResponse(page)
         
     def post(self, request):
-        pass
-        # if request.method == "POST":
-        #     email = request.POST.get('email')
-        #     password = request.POST.get('password')
-        #     user_query = Account.objects.filter(email=email, password=password)
-        #     if user_query:
-        #         user= user_query[0]
-        #         request.session[user.id] = user
-        #         return HttpResponseRedirect(reverse('home'))
-        #     else:
-        #         return HttpResponseRedirect(reverse('login'))
-
+        if request.method == "POST":
+            data = request.POST
+            old = data.get('oldpw')
+            new = data.get('newpw')
+            comfirm = data.get('comfirmpw')
+            user = request.user
+            user_id = user['id']
+            if new != comfirm:
+                return HttpResponse(u'两次输入密码不一致')
+            account = Account.objects.get(id=user_id)
+            hashed = account.password
+            is_pass = validate_password(hashed, old)
+            if not is_pass:
+                return HttpResponse(u"密码错误")
+            account.password = encrypt_password(new)
+            account.save()
+            return HttpResponseRedirect(reverse("logoff"))
+            
+        return HttpResponse("error")
+    
 
 
 

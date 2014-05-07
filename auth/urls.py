@@ -1,7 +1,8 @@
 #encoding=utf-8
 from django.conf.urls import patterns, include, url
 from monitor.views import AccountAdminView
-from auth.views import ChangePasswordView
+from auth.views import ChangePasswordView, delete_account
+
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -11,7 +12,7 @@ urlpatterns = patterns('',
     # Examples:
     url(r'^/admin$', AccountAdminView.as_view(), name="admin"),
     url(r'^/admin/add$', AccountAdminView.as_view(), name="add_user"),
-    url(r'^/delete/(?P<pk>\d+)$', 'delete_account', name='delete_account'),
+    url(r'^/delete/(?P<pk>\d+)$', delete_account, name='delete_account'),
     url(r'^/changpw$', ChangePasswordView.as_view(), name='change_pw'),
     # url(r'^insight/', include('insight.foo.urls')),
 

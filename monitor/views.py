@@ -26,6 +26,7 @@ from monitor.models import Words
 from monitor.models import AlarmRecord
 from auth.models import Account
 from auth.forms import AccountForm
+from auth.utils import encrypt_password
 
 class ViewObject(View):
     """
@@ -241,8 +242,12 @@ class AccountAdminView(BaseView):
     def post(self, request):
         form = AccountForm(request.POST)
         if not form.is_valid():
-            return HttpResponse('请填写完整')
+            return HttpResponse(u'请填写完整')
         cleaned_data = form.cleaned_data
+        hashed = encrypt_password(cleaned_data['password']) 
+        cleaned_data['password'] = hashed
+        if Account.objects.filter(email=cleaned_data['email']):
+            return HttpResponse(u"email 已经注册了")
         try:
             Account.objects.create(**cleaned_data)
         except Exception, e:
