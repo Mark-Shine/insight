@@ -27,6 +27,10 @@ from monitor.models import AlarmRecord
 from auth.models import Account
 from auth.forms import AccountForm
 from auth.utils import encrypt_password
+from tracking.views import dashboard
+from tracking.models import Visitor, Pageview
+
+
 
 class ViewObject(View):
     """
@@ -234,7 +238,6 @@ class AccountAdminView(BaseView):
 
     def mod_content(self,):
         accounts_query = Account.objects.all()
-        print accounts_query
         page_html = self.include(
             self.template_name, {"accounts": accounts_query})
         return page_html
@@ -253,6 +256,49 @@ class AccountAdminView(BaseView):
         except Exception, e:
             print e
         return HttpResponseRedirect(reverse('admin'))
+
+
+class TrackView(BaseView):    
+
+    def get(self, request):
+        context = {}
+        context['admin_active'] = 'active'
+        self.request = request
+        page = self.make(request, context)
+        return HttpResponse(page)
+
+    def mod_content(self,):
+        page_html = dashboard(self.request)
+        return page_html
+
+
+class PageView(BaseView):
+    template_name = "tracking/pageview.html"
+
+    def get(self, request, pk=None):
+        context = {}
+        context['track_active'] = 'active'
+        self.mode = pk and 'detail' or 'tolist'
+        self.request = request
+        self.pk = pk
+        page = self.make(request, context)
+        return HttpResponse(page)
+
+    def detail(self,):
+        visitor_query = Visitor.objects.filter(user_id=self.pk).values_list("session_key", flat=True)
+        return Pageview.objects.filter(visitor_id__in=visitor_query)
+
+    def tolist(self, ):
+        return Pageview.objects.all()
+
+    def mod_content(self, ):
+        func = getattr(self, self.mode)
+        record_query = func()
+        context = {}
+        page_html = self.include(
+            self.template_name, {"record_query": record_query})
+        return page_html
+
 
 
 

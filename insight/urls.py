@@ -2,7 +2,7 @@
 from django.conf.urls import patterns, include, url
 from monitor.views import HomeView
 from monitor.views import RecordViews
-from monitor.views import WordsView
+from monitor.views import WordsView, TrackView, PageView
 from monitor.apis import recieve_data
 from auth.views import LoginView
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -17,10 +17,13 @@ urlpatterns = patterns('',
     url(r'^logoff$', 'auth.views.logoff', name='logoff'),
     url(r'^test$', recieve_data, name="test"),
     url(r'^records$', RecordViews.as_view(), name="records"),
+    url(r'^track$', TrackView.as_view(), name="track"),
+    url(r'^track/user$', PageView.as_view(), name="pageview"),
+    url(r'^track/user/(?P<pk>\d+)$', PageView.as_view(), name="pageview"),
     url(r'^words', include('monitor.urls')),
     # url(r'^insight/', include('insight.foo.urls')),
     url(r'^auth', include('auth.urls')),
-
+    # url(r'^tracking/', include('tracking.urls')),
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 

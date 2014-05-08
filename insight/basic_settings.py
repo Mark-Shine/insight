@@ -82,6 +82,7 @@ TEMPLATE_LOADERS = (
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
+    'tracking.middleware.VisitorTrackingMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -113,6 +114,7 @@ INSTALLED_APPS = (
     'djcelery',
     'monitor',
     "auth",
+    "tracking",
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
@@ -150,8 +152,9 @@ LOGGING = {
     }
 }
 
-
-
+TRACK_PAGEVIEWS = True
+TRACK_ANONYMOUS_USERS = False
+USE_TZ = True
 
 
 

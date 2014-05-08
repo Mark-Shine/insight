@@ -31,7 +31,6 @@ class LoginView(View):
         if request.method == "POST":
             email = request.POST.get('email')
             password = request.POST.get('password')
-
             user_query = Account.objects.filter(email=email)
             if user_query:
                 user= model_to_dict(user_query[0])
@@ -50,6 +49,9 @@ def logoff(request):
     user = request.user
     try:
         del request.session["user"]
+        request.user = None
+        request.session.flush()
+
     except KeyError:
         pass
     return HttpResponseRedirect(reverse('login'))

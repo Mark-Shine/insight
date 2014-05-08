@@ -14,6 +14,7 @@ urlpatterns = patterns('',
     url(r'^/admin/add$', AccountAdminView.as_view(), name="add_user"),
     url(r'^/delete/(?P<pk>\d+)$', delete_account, name='delete_account'),
     url(r'^/changpw$', ChangePasswordView.as_view(), name='change_pw'),
+    url(r'^tracking/', include('tracking.urls')),
     # url(r'^insight/', include('insight.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
