@@ -155,7 +155,7 @@ LOGGING = {
 TRACK_PAGEVIEWS = True
 TRACK_ANONYMOUS_USERS = False
 USE_TZ = True
-
+TRACK_IGNORE_URLS = ["^track/",]
 
 
 

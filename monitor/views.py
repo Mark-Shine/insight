@@ -29,7 +29,7 @@ from auth.forms import AccountForm
 from auth.utils import encrypt_password
 from tracking.views import dashboard
 from tracking.models import Visitor, Pageview
-
+from .utils import paginate, page
 
 
 class ViewObject(View):
@@ -275,8 +275,23 @@ class TrackView(BaseView):
 class PageView(BaseView):
     template_name = "tracking/pageview.html"
 
+    def get_pagination(self, objects):
+        """分页"""
+        pagenum = int(self.pagenum or 1)
+        paged_objects = paginate(objects, pagenum)
+        paged_objects.search_url = reverse('pageview')
+        pagination = self.include('monitor/pagination.html', {
+            'page_count': range(1, int(paged_objects.page_count)+1),
+            'objects':paged_objects,
+            'next_two': paged_objects.number + 2,
+            'next_three':paged_objects.number + 3,
+            'prev_two':paged_objects.number -2,
+            'loop_times':range(1,6)})
+        return paged_objects, pagination
+
     def get(self, request, pk=None):
         context = {}
+        self.pagenum = request.GET.get('page')
         context['track_active'] = 'active'
         self.mode = pk and 'detail' or 'tolist'
         self.request = request
@@ -294,9 +309,10 @@ class PageView(BaseView):
     def mod_content(self, ):
         func = getattr(self, self.mode)
         record_query = func()
+        paged_objects, pagination = self.get_pagination(record_query)
         context = {}
         page_html = self.include(
-            self.template_name, {"record_query": record_query})
+            self.template_name, {"record_query": paged_objects,"pagination": pagination})
         return page_html
 
 

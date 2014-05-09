@@ -1,15 +1,13 @@
 <h2 class="sub-header">用户跟踪表</h2>
-<div>
-  
-</div>
   <div class="table-responsive">
     <table class="table table-striped">
       <thead>
         <tr>
           <th>#</th>
-          <th>用户</th>
-          <th>访问路径</th>
-          <th>访问时间</th>
+          <th >用户</th>
+          <th >访问路径</th>
+          <th >IP地址</th>
+          <th >访问时间</th>
         </tr>
       </thead>
       <tbody>
@@ -18,10 +16,16 @@
           <td>{{forloop.counter}}</td>
           <td><a href="{%url 'pageview' pk=w.visitor.user.id%}">{{w.visitor.user.name}}</a></td>
           <td>{{w.url}}</td>
+          <td>{{w.visitor.ip_address}}</td>
           <td>{{w.view_time}}</td>
         </tr>
+
         {% empty %}
         {% endfor %}
       </tbody>
+        {%if record_query%}
+        {{pagination}}
+
+        {%endif%}
     </table>
   </div>
