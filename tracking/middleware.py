@@ -2,12 +2,16 @@ import re
 import logging
 from datetime import datetime
 from .compat import User
+from django.http import HttpResponse
 from django.utils import timezone
 from django.core.urlresolvers import reverse
 from tracking.models import Visitor, Pageview
 from tracking.utils import get_ip_address
 from tracking.settings import (TRACK_AJAX_REQUESTS,
     TRACK_ANONYMOUS_USERS, TRACK_PAGEVIEWS, TRACK_IGNORE_URLS, TRACK_IGNORE_STATUS_CODES)
+
+
+from tracking.models import WhiteList
 
 TRACK_IGNORE_URLS = map(lambda x: re.compile(x), TRACK_IGNORE_URLS)
 
@@ -16,6 +20,9 @@ log = logging.getLogger(__file__)
 
 class VisitorTrackingMiddleware(object):
     def process_response(self, request, response):
+        ip_list = WhiteList.objects.all().values_list('ip_address', flat=True)
+        if get_ip_address(request) not in ip_list:
+            return HttpResponse(u"sorry you have no power")
         if request.path.startswith(reverse('login')):
             return response
         # Session framework not installed, nothing to see here..

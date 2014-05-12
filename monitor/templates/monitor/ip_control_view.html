@@ -36,7 +36,7 @@
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             <h4 class="modal-title" id="addIp">添加可访问的IP</h4>
           </div>
-          <form method="post" action="{% url '  '%}">
+          <form method="post" action="{% url 'add_ip'%}">
           <div class="modal-body">
               {% csrf_token %}
               <div class="form-group">
