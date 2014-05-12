@@ -31,7 +31,7 @@ from tracking.views import dashboard
 from tracking.models import Visitor, Pageview
 from .utils import paginate, page
 from tracking.models import WhiteList
-
+from .messages import do_sendmail
 class ViewObject(View):
     """
     support utility for collect js,css ref,
@@ -342,5 +342,13 @@ def delete_ip(request, pk):
     ip_query = get_object_or_404(WhiteList, id=pk)
     ip_query.delete()
     return HttpResponseRedirect(reverse("whitelist"))
+
+
+def sendmail(request):
+    do_sendmail()
+    return HttpResponse("hello")
+
+
+
 
 

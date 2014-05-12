@@ -6,7 +6,7 @@ import time
 from celery import shared_task
 
 from monitor.models import *
-
+from monitor.messages import *
 
 
 TRANSFER_DICT=dict(website='sitename', 
@@ -33,9 +33,14 @@ def search_and_match(data, chars=[]):
             return (True, _id)
     return (False, "")
 
+
 def alarm():
     """警报"""
-    pass
+    users = Contact.objects.all()
+    msg = dict(users=users,)
+    do_sendmail()
+    do_sendsms()
+
 
 
 def transfer_dict(d_dict):
@@ -62,6 +67,10 @@ def filter_task(post_data):
         if flag:
             post['word'] = int(char_id)
             a_message.append(post)
+            try:
+                alarm()
+            except Exception, e:
+                raise e
         _post = transfer_dict(post)
         result.append(AlarmRecord(**_post))
     #批量创建记录
