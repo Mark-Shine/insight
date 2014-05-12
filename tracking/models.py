@@ -17,6 +17,7 @@ GEOIP_CACHE_TYPE = getattr(settings, 'GEOIP_CACHE_TYPE', 4)
 
 log = logging.getLogger(__file__)
 
+
 class Visitor(models.Model):
     session_key = models.CharField(max_length=40, primary_key=True)
     user = models.ForeignKey(User, related_name='visit_history',
@@ -77,6 +78,11 @@ class Pageview(models.Model):
 
     class Meta(object):
         ordering = ('-view_time',)
+
+
+class WhiteList(models.Model):
+    ip_address = models.CharField(max_length=39, editable=False)
+    
 
 
 from tracking import handlers

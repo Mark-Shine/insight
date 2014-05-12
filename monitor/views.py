@@ -30,7 +30,7 @@ from auth.utils import encrypt_password
 from tracking.views import dashboard
 from tracking.models import Visitor, Pageview
 from .utils import paginate, page
-
+from tracking.models import WhiteList
 
 class ViewObject(View):
     """
@@ -316,7 +316,31 @@ class PageView(BaseView):
         return page_html
 
 
+class IpControlView(BaseView):
+    template_name = 'monitor/ip_control_view.html'
+
+    def get(self, request):
+        context = {}
+        context['ip_control_active'] = 'active'
+        page = self.make(request, context)
+        return HttpResponse(page)
+
+    def mod_content(self, ):
+        ips = WhiteList.objects.all()
+        page_html = self.include(
+            self.template_name, {"ips": ips})
+        return page_html
 
 
+def add_ip(request, ):
+    if request.method == 'POST':
+        ip_str = request.POST.get('ip_str')
+        WhiteList.objects.create(**{"ip_address": ip_str})
+    return HttpResponseRedirect(reverse("whitelist"))
+
+def delete_ip(request, pk):
+    ip_query = get_object_or_404(WhiteList, id=pk)
+    ip_query.delete()
+    return HttpResponseRedirect(reverse("whitelist"))
 
 

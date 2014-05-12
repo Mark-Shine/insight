@@ -6,6 +6,8 @@ from monitor.views import WordsView, TrackView, PageView
 from monitor.apis import recieve_data
 from auth.views import LoginView
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from monitor.views import IpControlView
+from monitor.views import add_ip
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
 # admin.autodiscover()
@@ -23,8 +25,11 @@ urlpatterns = patterns('',
     url(r'^words', include('monitor.urls')),
     # url(r'^insight/', include('insight.foo.urls')),
     url(r'^auth', include('auth.urls')),
+    url(r'^whitelist/add$', add_ip, name='add_ip'),
+    url(r'^whitelist/delete/(?P<pk>\d+)$', 'delete_ip', name='delete_ip'),
+    url(r'^whitelist$', IpControlView.as_view(), name='whitelist'),
     # url(r'^tracking/', include('tracking.urls')),
-    # Uncomment the admin/doc line below to enable admin documentation:
+    # Uncomment the admin/documentationc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
