@@ -36,4 +36,11 @@ class Contact(models.Model):
     recieve_email = models.CharField(max_length=8, blank=True, null=True)
     recieve_sms = models.CharField(max_length=8, blank=True, null=True)
 
+class Sites(models.Model):
+    """监控的网站"""
+    host = models.CharField(max_length=64, blank=True, null=True)
+    name = models.CharField(max_length=64, blank=True, null=True)
+    #是否启用
+    enabled = models.BooleanField()
+
 

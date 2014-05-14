@@ -32,6 +32,8 @@ class AuthenticationMiddleware(object):
         #exclude login 
         if request.path.startswith(reverse('login')):
             return None
+        if request.path.startswith(reverse('recieve')):
+            return None
         user = request.session.get('user')
         if not user:
             return HttpResponseRedirect(reverse("login"))

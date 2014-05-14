@@ -10,9 +10,6 @@ def build_message(recipient_list=['szh1216@gmail.com'],
     return (subject, message, from_email, recipient_list)
 
 
-
-
-
 def do_sendmail(title=u"煎茶系统邮件", msg={}, email_template="mail.html", mail_list=['75103752@qq.com']):
     t = loader.get_template(email_template)  
     subject, from_email, to = title, EMAIL_HOST_USER, mail_list  

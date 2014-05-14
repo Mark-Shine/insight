@@ -32,6 +32,9 @@ from tracking.models import Visitor, Pageview
 from .utils import paginate, page
 from tracking.models import WhiteList
 from .messages import do_sendmail
+from .models import Sites
+
+
 class ViewObject(View):
     """
     support utility for collect js,css ref,
@@ -347,6 +350,39 @@ def delete_ip(request, pk):
 def sendmail(request):
     do_sendmail()
     return HttpResponse("hello")
+
+
+class SitesView(BaseView):
+    """监控站点的添加及浏览"""
+    
+    template_name = "monitor/sites.html"
+
+    def get(self, request):
+        context = {}
+        context['sites_active'] = 'active'
+        page = self.make(request, context)
+        return HttpResponse(page)
+
+    def mod_content(self, ):
+        sites = Sites.objects.all()
+        page_html = self.include(
+            self.template_name, {"sites": sites})
+        return page_html
+
+    def post(self, request):
+
+        if request.method == 'POST':
+            host = request.POST.get('host')
+            name = request.POST.get('name')
+            Sites.objects.create(**{"host":host, "name":name})
+        return HttpResponseRedirect(reverse("sites"))
+
+def delete_site(request, pk):
+    """删除监控的站点"""
+    sites = get_object_or_404(Sites, id=pk)
+    sites.delete()
+    return HttpResponseRedirect(reverse("sites"))
+
 
 
 

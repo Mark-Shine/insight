@@ -1,0 +1,63 @@
+<h2 class="sub-header">站点</h2>
+<div>
+  <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#addSite">
+    新增站点
+  </button>
+
+  
+</div>
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>站点名称</th>
+          <th>host</th>
+          <th>状态</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for w in sites %}
+        <tr>
+          <td>{{forloop.counter}}</td>
+          <td>{{w.name}}</td>
+          <td> {{w.host}}</td>
+          <td> status</td>
+          <td><a href="{%url 'delete_site' pk=w.id %}">删除</a></td>
+        </tr>
+        {% empty %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+<!-- Modal -->
+  <div class="modal fade" id="addSite" tabindex="-1" role="dialog" aria-labelledby="addSite" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" id="addSite">新增站点</h4>
+          </div>
+          <form method="post" action="{% url 'add_site'%}">
+          <div class="modal-body">
+              {% csrf_token %}
+              <div class="form-group">
+              <label>站点名称</label>
+              <input class='form-control' placeholder='输入站点名称' name="name" type="text">
+              </div>
+              <div class="form-group">
+              <label>HOST</label>
+              <input class='form-control' placeholder='输入站点HOST' name="host" type="text">
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+          </form>
+
+        </div>
+      </div>
+    </div>

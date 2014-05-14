@@ -9,6 +9,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from monitor.views import IpControlView
 from monitor.views import add_ip, delete_ip
 from monitor.views import sendmail
+from monitor.views import SitesView, delete_site
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
 # admin.autodiscover()
@@ -18,12 +19,16 @@ urlpatterns = patterns('',
     url(r'^$', HomeView.as_view(), name="home"),
     url(r'^login$', LoginView.as_view(), name="login"),
     url(r'^logoff$', 'auth.views.logoff', name='logoff'),
-    url(r'^test$', recieve_data, name="test"),
+    url(r'^api/test$', recieve_data, name="recieve"),
     url(r'^records$', RecordViews.as_view(), name="records"),
+    url(r'^watchsites$', SitesView.as_view(), name="sites"),
+    url(r'^watchsites/add$', SitesView.as_view(), name="add_site"),
+    url(r'^watchsites/delete/(?P<pk>\d+)$', delete_site, name="delete_site"),
     url(r'^track$', TrackView.as_view(), name="track"),
     url(r'^track/user$', PageView.as_view(), name="pageview"),
     url(r'^track/user/(?P<pk>\d+)$', PageView.as_view(), name="pageview"),
     url(r'^words', include('monitor.urls')),
+
     # url(r'^insight/', include('insight.foo.urls')),
     url(r'^auth', include('auth.urls')),
     url(r'^whitelist/add$', add_ip, name='add_ip'),

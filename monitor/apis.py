@@ -19,6 +19,7 @@ from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_exempt
+from .models import Sites
 import json
 
 
@@ -39,8 +40,11 @@ def multiply(request):
 def recieve_data(request):
     data = request.POST
     try:
+        sites = Sites.objects.all().values_list('host', flat=True)
+        request_host = request.get_host()
+        if request_host not in sites:
+            return HttpResponse('not allowed')
         filter_task.delay(data)
-
     except Exception, e:
         print "error: %s" % e
     else:

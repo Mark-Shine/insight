@@ -25,6 +25,8 @@ class VisitorTrackingMiddleware(object):
             return HttpResponse(u"sorry you have no power")
         if request.path.startswith(reverse('login')):
             return response
+        if request.path.startswith(reverse('recieve')):
+            return response
         # Session framework not installed, nothing to see here..
         if not hasattr(request, 'session'):
             return response
