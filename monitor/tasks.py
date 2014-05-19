@@ -9,6 +9,7 @@ from monitor.models import *
 from monitor.messages import *
 from monitor.utils import *
 
+
 TRANSFER_DICT=dict(website='sitename', 
     title="title", time="time", 
     user_name="author", url="url", 
@@ -38,8 +39,10 @@ def alarm():
     """警报"""
     users = Contact.objects.all()
     msg = dict(users=users,)
-    do_sendmail()
-    do_sendsms()
+    contacts = Contact.objects.all().values_list("email", flat=True)
+    msg = {"content": u"你好，这里是煎茶系统"}
+    do_sendmail(msg=msg, mail_list=contacts)
+    # do_sendsms()
 
 
 

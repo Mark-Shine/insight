@@ -16,7 +16,11 @@ def do_sendmail(title=u"煎茶系统邮件", msg={}, email_template="mail.html",
     html_content = t.render(Context(msg))
     msg = EmailMultiAlternatives(subject, html_content, from_email, to)  
     msg.attach_alternative(html_content, "text/html") 
-    msg.send()  
+    try:
+        msg.send()  
+    except Exception, e:
+        raise e
     
+
 def do_sendsms():
     pass

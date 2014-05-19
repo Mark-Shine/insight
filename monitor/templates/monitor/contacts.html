@@ -1,0 +1,67 @@
+<h2 class="sub-header">报警联系人</h2>
+<div>
+  <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#addContact">
+    新增联系人
+  </button>
+
+  
+</div>
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>名字</th>
+          <th>phone</th>
+          <th>email</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for w in contacts %}
+        <tr>
+          <td>{{forloop.counter}}</td>
+          <td>{{w.name}}</td>
+          <td> {{w.phone}}</td>
+          <td> {{w.email}}</td>
+          <td><a href="{%url 'delete_contact' pk=w.id %}">删除</a></td>
+        </tr>
+        {% empty %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+<!-- Modal -->
+  <div class="modal fade" id="addContact" tabindex="-1" role="dialog" aria-labelledby="addContact" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" id="addContact">新增联系人</h4>
+          </div>
+          <form method="post" action="{% url 'add_contact'%}">
+          <div class="modal-body">
+              {% csrf_token %}
+              <div class="form-group">
+              <label>名字</label>
+              <input class='form-control' placeholder='输入名字' name="name" type="text">
+              </div>
+              <div class="form-group">
+              <label>phone</label>
+              <input class='form-control' placeholder='输入站点Phone' name="phone" type="text">
+              </div>
+              <div class="form-group">
+              <label>email</label>
+              <input class='form-control' placeholder='输入站点email' name="email" type="text">
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+          </form>
+
+        </div>
+      </div>
+    </div>

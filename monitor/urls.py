@@ -11,7 +11,9 @@ urlpatterns = patterns(
     url(r'^/add$', 'add_word', name='add_word'),
     url(r'^/edit/(?P<pk>\d+)$', 'edit_word', name='edit_word',),
     url(r'^/delete/(?P<pk>\d+)$', 'delete_word', name='delete_word'),
-
+    url(r'^contact$', views.ContactView.as_view(), name="contacts"),
+    url(r'^contact/add$', views.ContactView.as_view(), name='add_contact'),
+    url(r'^contact/delete/(?P<pk>\d+)$', 'delete_contact', name='delete_contact'),
     # (r'^(?P<pk>\d+)/edit$', views.EditDemandView.as_view()),
     # (r'^delete$', views.DeleteDemandView.as_view()),
 )

@@ -32,7 +32,7 @@ from tracking.models import Visitor, Pageview
 from .utils import paginate, page
 from tracking.models import WhiteList
 from .messages import do_sendmail
-from .models import Sites
+from .models import Sites, Contact
 
 
 class ViewObject(View):
@@ -384,6 +384,38 @@ def delete_site(request, pk):
     return HttpResponseRedirect(reverse("sites"))
 
 
+class ContactView(BaseView):
+    """联系人"""
+    
+    template_name = "monitor/contacts.html"
+
+    def get(self, request):
+        context = {}
+        context['contacts_active'] = 'active'
+        page = self.make(request, context)
+        return HttpResponse(page)
+
+    def mod_content(self, ):
+        contacts = Contact.objects.all()
+        page_html = self.include(
+            self.template_name, {"contacts": contacts})
+        return page_html
+
+    def post(self, request):
+        print "!!!!!!!!!!!!"
+        if request.method == 'POST':
+            print "AAAAAAAAAAAAA"
+            phone = request.POST.get('phone')
+            name = request.POST.get('name')
+            email = request.POST.get('email')
+            Contact.objects.create(**{"phone": phone, "name": name, "email": email})
+        return HttpResponseRedirect(reverse("contacts"))
+
+def delete_contact(request, pk):
+    """删除联系人"""
+    contacts = get_object_or_404(Contact, id=pk)
+    contacts.delete()
+    return HttpResponseRedirect(reverse("contacts"))
 
 
 
