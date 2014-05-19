@@ -7,7 +7,7 @@ from celery import shared_task
 
 from monitor.models import *
 from monitor.messages import *
-
+from monitor.utils import *
 
 TRANSFER_DICT=dict(website='sitename', 
     title="title", time="time", 
@@ -47,9 +47,12 @@ def transfer_dict(d_dict):
     for k, v in TRANSFER_DICT.items():
         if k == 'time':
             d_dict[k] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(float(d_dict[k])))
+        # elif k == 'clientip':
+        #     d_dict[k] = get_ip_address(d_dict[k])
         else:
             d_dict[k] = d_dict.pop(v)
     return d_dict
+
 
 @shared_task
 def filter_task(post_data):

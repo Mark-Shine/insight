@@ -3,6 +3,7 @@ import logging
 from datetime import datetime
 from .compat import User
 from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.utils import timezone
 from django.core.urlresolvers import reverse
 from tracking.models import Visitor, Pageview
@@ -44,9 +45,11 @@ class VisitorTrackingMiddleware(object):
         # over, thus having a more accurate start time of session
         user = getattr(request, 'user', None)
         # Check for anonymous users
-        if not user :
-            if not TRACK_ANONYMOUS_USERS:
-                return response
+        # if cookie lost, redo login
+        if not user or not isinstance(user, dict):
+            return HttpResponseRedirect(reverse("login"))
+            # if not TRACK_ANONYMOUS_USERS:
+            #     return response
             user = None
         #get user instance
         user = User.objects.get(id=user['id'])
