@@ -26,8 +26,6 @@ import json
 from .tasks import filter_task
 
 
-
-
 def multiply(request):
     x = int(request.GET['x'])
     y = int(request.GET['y'])
@@ -41,11 +39,11 @@ def recieve_data(request):
     data = request.POST
     try:
         #获取许可的站点
-        # sites = Sites.objects.all().values_list('host', flat=True)
-        # request_host = request.get_host()
-        # if request_host not in sites:
-            # print "host not allowed"
-            # return HttpResponse('not allowed')
+        sites = Sites.objects.all().values_list('host', flat=True)
+        request_ip = request.META['REMOTE_ADDR']
+        if request_ip not in sites:
+            print "ip not allowed"
+            return HttpResponse('not allowed')
         filter_task.delay(data)
     except Exception, e:
         print "error: %s" % e

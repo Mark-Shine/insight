@@ -15,7 +15,7 @@ class Account(models.Model):
     sms_enable = models.IntegerField(blank=True, null=True)
     create_time = models.DateTimeField(null=True, blank=True,
         auto_now=True,)
-    weights = models.IntegerField(blank=True)
+    weights = models.IntegerField(blank=True, default=0)
 
 class ActionRecord(models.Model):
     # rd_name = models.CharField()
