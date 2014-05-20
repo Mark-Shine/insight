@@ -258,7 +258,7 @@ class AccountAdminView(BaseView):
         try:
             Account.objects.create(**cleaned_data)
         except Exception, e:
-            print e
+            raise e
         return HttpResponseRedirect(reverse('admin'))
 
 
