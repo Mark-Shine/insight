@@ -6,6 +6,7 @@ class Words(models.Model):
     """关键字"""
     word = models.CharField(max_length=32)
     nums = models.IntegerField(blank=True, null=True)
+    enabled = models.BooleanField(blank=True, default=True)
 
 
 class Website(models.Model):

@@ -64,7 +64,7 @@ def filter_task(post_data):
     result = list()
     #警报列表
     a_message = list()
-    chars = Words.objects.values_list("id", "word")
+    chars = Words.objects.filter(enabled=True).values_list("id", "word")
     for index in range(0, count):
         json_post = post_data[str(index)]
         post = json.loads(json_post)

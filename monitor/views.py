@@ -144,7 +144,7 @@ class WordsView(BaseView):
     template_name = 'words.html'
 
     def mod_content(self, ): 
-        words =  Words.objects.all()
+        words =  Words.objects.filter(enabled=True)
         for w in words:
             w.count = AlarmRecord.objects.filter(word=w.id).count()
 
@@ -172,7 +172,8 @@ def edit_word(request, pk):
 
 def delete_word(request, pk):
     word = get_object_or_404(Words, id=pk)
-    word.delete()
+    word.enabled = False
+    word.save()
     return HttpResponseRedirect(reverse("words"))
 
 

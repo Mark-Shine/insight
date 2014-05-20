@@ -1,6 +1,6 @@
 #启动rabbitmq
 
-nohup rabbitmq-server start > nohup.out& 
+sudo nohup rabbitmq-server start > nohup.out& 
 
 #启动celery
 
