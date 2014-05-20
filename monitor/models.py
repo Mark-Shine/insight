@@ -42,6 +42,6 @@ class Sites(models.Model):
     host = models.CharField(max_length=64, blank=True, null=True)
     name = models.CharField(max_length=64, blank=True, null=True)
     #是否启用
-    # enabled = models.BooleanField()
+    enabled = models.BooleanField(blank=True, default=True)
 
 
