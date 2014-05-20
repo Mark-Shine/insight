@@ -403,9 +403,7 @@ class ContactView(BaseView):
         return page_html
 
     def post(self, request):
-        print "!!!!!!!!!!!!"
         if request.method == 'POST':
-            print "AAAAAAAAAAAAA"
             phone = request.POST.get('phone')
             name = request.POST.get('name')
             email = request.POST.get('email')

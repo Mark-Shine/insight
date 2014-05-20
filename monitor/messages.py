@@ -17,10 +17,12 @@ def do_sendmail(title=u"煎茶系统邮件", msg={}, email_template="mail.html",
     msg = EmailMultiAlternatives(subject, html_content, from_email, to)  
     msg.attach_alternative(html_content, "text/html") 
     try:
-        msg.send()  
+        msg.send() 
+        print "email success" 
     except Exception, e:
+        print "emaill error"
         raise e
-    
+        
 
 def do_sendsms():
     pass

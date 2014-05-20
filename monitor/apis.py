@@ -49,9 +49,7 @@ def recieve_data(request):
         filter_task.delay(data)
     except Exception, e:
         print "error: %s" % e
-    else:
-        print "error"
-        return HttpResponse('error')    
+      
     return HttpResponse('ok')
 
 
