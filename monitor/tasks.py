@@ -8,7 +8,7 @@ from celery import shared_task
 from monitor.models import *
 from monitor.messages import *
 from monitor.utils import *
-
+from monitor.forms import PostRecordForm
 
 TRANSFER_DICT=dict(website='sitename', 
     title="title", time="time", 
@@ -77,7 +77,11 @@ def filter_task(post_data):
             except Exception, e:
                 raise e
         _post = transfer_dict(post)
-        result.append(AlarmRecord(**_post))
+        form = PostRecordForm(_post)
+        if form.is_valid():
+            cleaned_data = form.cleaned_data
+            result.append(AlarmRecord(**cleaned_data))
+            
     #批量创建记录
     AlarmRecord.objects.bulk_create(result)
     return result
