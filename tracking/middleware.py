@@ -25,6 +25,7 @@ class VisitorTrackingMiddleware(object):
         if OPEN_WHITE_IP:
             ip_list = WhiteList.objects.all().values_list('ip_address', flat=True)
             if get_ip_address(request) not in ip_list:
+                print u"sorry you have no power"
                 return HttpResponse(u"sorry you have no power")
 
         if request.path.startswith(reverse('login')):
