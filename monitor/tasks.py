@@ -26,12 +26,13 @@ def search_and_match(data, chars=[]):
     #一旦匹配 写入表、返回结果
     #下游函数收集结果
     #检查是否有结果，有报警
-    for _id, c in chars:
-        if not isinstance(c, unicode):
-            c = unicode(c, "utf-8")
-        if c in data:
-            record(data, c)
-            return (True, _id)
+    if data:
+        for _id, c in chars:
+            if not isinstance(c, unicode):
+                c = unicode(c, "utf-8")
+            if c in data:
+                record(data, c)
+                return (True, _id)
     return (False, "")
 
 
@@ -50,8 +51,6 @@ def transfer_dict(d_dict):
     for k, v in TRANSFER_DICT.items():
         if k == 'time':
             d_dict[k] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(float(d_dict[k])))
-        # elif k == 'clientip':
-        #     d_dict[k] = get_ip_address(d_dict[k])
         else:
             d_dict[k] = d_dict.pop(v)
     return d_dict
