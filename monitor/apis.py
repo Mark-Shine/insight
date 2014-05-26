@@ -2,7 +2,8 @@
 import requests
 import httplib, urllib
 import time
-
+import chardet
+from copy import deepcopy
 from django.utils import timezone
 from django.db import connection
 from django.utils.timezone import utc
@@ -33,10 +34,47 @@ def multiply(request):
     response = {'status': 'success', 'retval': result}
     return HttpResponse(dumps(response), mimetype='application/json')
 
+def urldecode_to(dict_data):
+    for k, v in dict_data.items():
+        urldecode_data = urllib.unquote(str(v))
+        encoding = chardet.detect(urldecode_data).get("encoding")
+        if encoding:
+            try:
+                unicode_data = unicode(urldecode_data, encoding)
+            except Exception, e:
+                print "error in urldecode_data encode"
+                raise e
+        else:
+            try:
+                unicode_data = unicode(urldecode_data, 'utf-8')
+            except Exception, e:
+                print "error in urldecode_data encode utf8"
+                try:
+                    unicode_data = unicode(urldecode_data, 'gbk')
+                except Exception, e:
+                    print "error in urldecode_data encode GB2312"
+                    raise e
+        dict_data[str(k)] = unicode_data
+    return dict_data
+
+def trans_encoding(raw_data):
+    new = {}
+    count = len(raw_data)
+    for index in range(0, count):
+        v = raw_data[str(index)]
+        json_data = json.loads(v)
+        new[index] = urldecode_to(json_data)
+    return new
 
 @csrf_exempt
 def recieve_data(request):
     data = request.POST
+
+    try:
+        data = trans_encoding(data)
+    except Exception, e:
+        print "trasn error"
+        print e
     try:
         #获取许可的站点
         sites = Sites.objects.all().values_list('host', flat=True)

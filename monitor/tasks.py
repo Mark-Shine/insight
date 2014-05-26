@@ -49,23 +49,6 @@ def record(data, char):
 
 def search_and_match(data, chars=[]):
     if data:
-        encoding = chardet.detect(data).get('encoding')
-        if encoding:
-            try:
-                data = unicode(data, encoding)
-            except Exception, e:
-                print "error in data encode"
-                raise e
-        else:
-            try:
-                data = unicode(data, 'utf-8')
-            except Exception, e:
-                print "error in data encode utf8"
-                try:
-                    data = unicode(data, 'gbk')
-                except Exception, e:
-                    print "error in data encode GB2312"
-                    raise e
         for _id, c in chars:
             if c in data:
                 if not isinstance(c, unicode):
@@ -87,7 +70,25 @@ def alarm():
 
 def urldecode_to_utf8(dict_data):
     for k, v in dict_data.items():
-        dict_data[k] = urllib.unquote(str(v))
+        urldecode_data = urllib.unquote(str(v))
+        encoding = chardet.detect(urldecode_data).get("encoding")
+        if encoding:
+            try:
+                unicode_data = unicode(urldecode_data, encoding)
+            except Exception, e:
+                print "error in urldecode_data encode"
+                raise e
+        else:
+            try:
+                unicode_data = unicode(urldecode_data, 'utf-8')
+            except Exception, e:
+                print "error in urldecode_data encode utf8"
+                try:
+                    unicode_data = unicode(urldecode_data, 'gbk')
+                except Exception, e:
+                    print "error in urldecode_data encode GB2312"
+                    raise e
+        dict_data[k] = unicode_data
     return dict_data
 
 def transfer_dict(d_dict):
@@ -101,16 +102,16 @@ def transfer_dict(d_dict):
 
 @shared_task
 def filter_task(post_data):
-    count = len(post_data)
+    # count = len(post_data)
     #记录集合
     result = list()
     #警报列表
     a_message = list()
     chars = Words.objects.filter(enabled=True).values_list("id", "word")
-    for index in range(0, count):
-        json_post = post_data[str(index)]
-        raw_dict = json.loads(json_post)
-        post = urldecode_to_utf8(raw_dict)
+    for post in post_data.values():
+        # json_post = post_data[str(index)]
+        # raw_dict = json.loads(json_post)
+        # post = urldecode_to_utf8(raw_dict)
         flag, char_id = search_and_match(post['message'], chars)
         #如果有关键字, 则做标记
         if flag:
