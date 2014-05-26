@@ -1,8 +1,10 @@
 #encoding=utf-8
 
 from __future__ import absolute_import
+import httplib, urllib
 import json
 import time
+import urlparse
 from celery import shared_task
 
 from monitor.models import *
@@ -30,6 +32,8 @@ def search_and_match(data, chars=[]):
         for _id, c in chars:
             if not isinstance(c, unicode):
                 c = unicode(c, "utf-8")
+            if not isinstance(data, unicode):
+                data = unicode(data, "utf8")
             if c in data:
                 record(data, c)
                 return (True, _id)
@@ -46,6 +50,11 @@ def alarm():
     # do_sendsms()
 
 
+def urldecode_to_utf8(dict_data):
+    print dict_data
+    for k, v in dict_data.items():
+        dict_data[k] = urllib.unquote(str(v))
+    return dict_data
 
 def transfer_dict(d_dict):
     for k, v in TRANSFER_DICT.items():
@@ -66,7 +75,9 @@ def filter_task(post_data):
     chars = Words.objects.filter(enabled=True).values_list("id", "word")
     for index in range(0, count):
         json_post = post_data[str(index)]
-        post = json.loads(json_post)
+        raw_dict = json.loads(json_post)
+        post = urldecode_to_utf8(raw_dict)
+        print post
         flag, char_id = search_and_match(post['message'], chars)
         #如果有关键字, 则做标记
         if flag:
