@@ -30,15 +30,18 @@ def search_and_match(data, chars=[]):
     #检查是否有结果，有报警
     if data:
         for _id, c in chars:
-            if not isinstance(c, unicode):
-                c = unicode(c, "utf-8")
+            
             if not isinstance(data, unicode):
                 try:
                     data = unicode(data, "utf8")
+                    if not isinstance(c, unicode):
+                        c = unicode(c, "utf-8")
                 except Exception, e:
                     print "it is not utf8"
-                else:
+                    print "in gbk"
                     data = unicode(data, "gbk")
+                    if not isinstance(c, unicode):
+                        c = unicode(c, "gbk")
             if c in data:
                 record(data, c)
                 return (True, _id)
