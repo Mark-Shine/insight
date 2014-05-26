@@ -36,7 +36,8 @@ def multiply(request):
 
 @csrf_exempt
 def recieve_data(request):
-    data = request.POST
+    raw = request.POST
+    data = urllib.unquote(raw).decode('utf8')
     try:
         #获取许可的站点
         sites = Sites.objects.all().values_list('host', flat=True)
