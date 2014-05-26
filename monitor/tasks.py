@@ -6,6 +6,7 @@ import json
 import time
 import urlparse
 from celery import shared_task
+import chardet
 
 from monitor.models import *
 from monitor.messages import *
@@ -22,27 +23,53 @@ def record(data, char):
     pass
 
 
-def search_and_match(data, chars=[]):
-    """检查是否匹配"""
+# def search_and_match(data, chars=[]):
+#     """检查是否匹配"""
     #匹配几个词、
     #一旦匹配 写入表、返回结果
     #下游函数收集结果
     #检查是否有结果，有报警
+    # if data:
+    #     for _id, c in chars:
+    #         if not isinstance(data, unicode):
+    #             try:
+    #                 data = unicode(data, "utf8")
+    #                 if not isinstance(c, unicode):
+    #                     c = unicode(c, "utf-8")
+    #             except Exception, e:
+    #                 print "it is not utf8"
+    #                 print "in gbk"
+    #                 data = unicode(data, "gbk")
+    #                 if not isinstance(c, unicode):
+    #                     c = unicode(c, "gbk")
+    #         if c in data:
+    #             record(data, c)
+    #             return (True, _id)
+    # return (False, "")
+
+def search_and_match(data, chars=[]):
     if data:
-        for _id, c in chars:
-            
-            if not isinstance(data, unicode):
+        encoding = chardet.detect(data).get('encoding')
+        if encoding:
+            try:
+                data = unicode(data, encoding)
+            except Exception, e:
+                print "error in data encode"
+                raise e
+        else:
+            try:
+                data = unicode(data, 'utf-8')
+            except Exception, e:
+                print "error in data encode utf8"
                 try:
-                    data = unicode(data, "utf8")
-                    if not isinstance(c, unicode):
-                        c = unicode(c, "utf-8")
+                    data = unicode(data, 'gbk')
                 except Exception, e:
-                    print "it is not utf8"
-                    print "in gbk"
-                    data = unicode(data, "gbk")
-                    if not isinstance(c, unicode):
-                        c = unicode(c, "gbk")
+                    print "error in data encode GB2312"
+                    raise e
+        for _id, c in chars:
             if c in data:
+                if not isinstance(c, unicode):
+                    c.decode('utf-8')
                 record(data, c)
                 return (True, _id)
     return (False, "")
@@ -59,7 +86,6 @@ def alarm():
 
 
 def urldecode_to_utf8(dict_data):
-    print dict_data
     for k, v in dict_data.items():
         dict_data[k] = urllib.unquote(str(v))
     return dict_data
@@ -85,7 +111,6 @@ def filter_task(post_data):
         json_post = post_data[str(index)]
         raw_dict = json.loads(json_post)
         post = urldecode_to_utf8(raw_dict)
-        print post
         flag, char_id = search_and_match(post['message'], chars)
         #如果有关键字, 则做标记
         if flag:
