@@ -108,7 +108,7 @@ def filter_task(post_data):
     #警报列表
     a_message = list()
     chars = Words.objects.filter(enabled=True).values_list("id", "word")
-    for post in post_data.values():
+    for post in post_data:
         # json_post = post_data[str(index)]
         # raw_dict = json.loads(json_post)
         # post = urldecode_to_utf8(raw_dict)

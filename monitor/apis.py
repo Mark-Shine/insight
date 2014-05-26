@@ -59,12 +59,12 @@ def urldecode_to(dict_data):
     return new
 
 def trans_encoding(raw_data):
-    new = {}
+    new = []
     count = len(raw_data)
     for index in range(0, count):
         v = raw_data[str(index)]
         json_data = json.loads(v)
-        new[index] = urldecode_to(json_data)
+        new.append(urldecode_to(json_data)) 
     return new
 
 @csrf_exempt
