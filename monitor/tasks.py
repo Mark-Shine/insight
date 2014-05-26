@@ -33,7 +33,12 @@ def search_and_match(data, chars=[]):
             if not isinstance(c, unicode):
                 c = unicode(c, "utf-8")
             if not isinstance(data, unicode):
-                data = unicode(data, "utf8")
+                try:
+                    data = unicode(data, "utf8")
+                except Exception, e:
+                    print "it is not utf8"
+                else:
+                    data = unicode(data, "gbk")
             if c in data:
                 record(data, c)
                 return (True, _id)
