@@ -69,9 +69,9 @@ def trans_encoding(raw_data):
 
 @csrf_exempt
 def recieve_data(request):
-    data = request.POST
+    raw = request.POST
     try:
-        data = trans_encoding(data)
+        data = trans_encoding(raw)
     except Exception, e:
         print "trasn error"
         print e
