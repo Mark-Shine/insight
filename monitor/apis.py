@@ -35,6 +35,7 @@ def multiply(request):
     return HttpResponse(dumps(response), mimetype='application/json')
 
 def urldecode_to(dict_data):
+    new = {}
     for k, v in dict_data.items():
         urldecode_data = urllib.unquote(str(v))
         encoding = chardet.detect(urldecode_data).get("encoding")
@@ -54,8 +55,8 @@ def urldecode_to(dict_data):
                 except Exception, e:
                     print "error in urldecode_data encode GB2312"
                     raise e
-        dict_data[str(k)] = unicode_data
-    return dict_data
+        new[str(k)] = unicode_data
+    return new
 
 def trans_encoding(raw_data):
     new = {}
@@ -69,12 +70,12 @@ def trans_encoding(raw_data):
 @csrf_exempt
 def recieve_data(request):
     data = request.POST
-
     try:
         data = trans_encoding(data)
     except Exception, e:
         print "trasn error"
         print e
+    print data
     try:
         #获取许可的站点
         sites = Sites.objects.all().values_list('host', flat=True)
