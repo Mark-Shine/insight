@@ -38,23 +38,15 @@ def urldecode_to(dict_data):
     new = {}
     for k, v in dict_data.items():
         urldecode_data = urllib.unquote(str(v))
-        encoding = chardet.detect(urldecode_data).get("encoding")
-        if encoding:
+        try:
+            unicode_data = unicode(urldecode_data, 'utf-8')
+        except Exception, e:
+            print "error in urldecode_data encode utf8"
             try:
-                unicode_data = unicode(urldecode_data, encoding)
+                unicode_data = unicode(urldecode_data, 'gbk')
             except Exception, e:
-                print "error in urldecode_data encode"
+                print "error in urldecode_data encode GB2312"
                 raise e
-        else:
-            try:
-                unicode_data = unicode(urldecode_data, 'utf-8')
-            except Exception, e:
-                print "error in urldecode_data encode utf8"
-                try:
-                    unicode_data = unicode(urldecode_data, 'gbk')
-                except Exception, e:
-                    print "error in urldecode_data encode GB2312"
-                    raise e
         new[str(k)] = unicode_data
     return new
 

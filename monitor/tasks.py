@@ -71,23 +71,23 @@ def alarm():
 def urldecode_to_utf8(dict_data):
     for k, v in dict_data.items():
         urldecode_data = urllib.unquote(str(v))
-        encoding = chardet.detect(urldecode_data).get("encoding")
-        if encoding:
+        # encoding = chardet.detect(urldecode_data).get("encoding")
+        # if encoding:
+        #     try:
+        #         unicode_data = unicode(urldecode_data, encoding)
+        #     except Exception, e:
+        #         print "error in urldecode_data encode"
+        #         raise e
+        # else:
+        try:
+            unicode_data = unicode(urldecode_data, 'utf-8')
+        except Exception, e:
+            print "error in urldecode_data encode utf8"
             try:
-                unicode_data = unicode(urldecode_data, encoding)
+                unicode_data = unicode(urldecode_data, 'gbk')
             except Exception, e:
-                print "error in urldecode_data encode"
+                print "error in urldecode_data encode GB2312"
                 raise e
-        else:
-            try:
-                unicode_data = unicode(urldecode_data, 'utf-8')
-            except Exception, e:
-                print "error in urldecode_data encode utf8"
-                try:
-                    unicode_data = unicode(urldecode_data, 'gbk')
-                except Exception, e:
-                    print "error in urldecode_data encode GB2312"
-                    raise e
         dict_data[k] = unicode_data
     return dict_data
 
@@ -102,16 +102,12 @@ def transfer_dict(d_dict):
 
 @shared_task
 def filter_task(post_data):
-    # count = len(post_data)
     #记录集合
     result = list()
     #警报列表
     a_message = list()
     chars = Words.objects.filter(enabled=True).values_list("id", "word")
     for post in post_data:
-        # json_post = post_data[str(index)]
-        # raw_dict = json.loads(json_post)
-        # post = urldecode_to_utf8(raw_dict)
         flag, char_id = search_and_match(post['message'], chars)
         #如果有关键字, 则做标记
         if flag:
