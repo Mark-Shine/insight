@@ -145,7 +145,12 @@ class WordsView(BaseView):
     template_name = 'words.html'
 
     def mod_content(self, ): 
-        words =  Words.objects.filter(enabled=True)
+        if self.user.is_superuser:
+            words =  Words.objects.filter(enabled=True,)
+        else:
+            team = self.user.account.team
+            team_query = Team.objects.get(id=team.id)
+            words = team_query.words.filter(enabled=True)
         for w in words:
             w.count = AlarmRecord.objects.filter(word=w.id).count()
 
@@ -157,6 +162,7 @@ class WordsView(BaseView):
 
     def get(self, request, ):
         context = {}
+        self.user = request.user
         page = self.make(request, context)
         return HttpResponse(page)
 
