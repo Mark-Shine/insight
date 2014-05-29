@@ -1,16 +1,14 @@
 # -*- coding: utf-8 *-*
-
-from tgdemand import CONTEXT_PATH
-from tgdemand import UPLOAD_PATH
-from tgdemand import SETTINGS
+from django.contrib.auth.models import User
 
 
 def common(request):
     user = request.user
+    if not isinstance(user, User):
+        return {}
 
     context = dict(
-        UPLOAD_PATH=UPLOAD_PATH,
-        CONTEXT_PATH=CONTEXT_PATH,
+        USER_NAME=user.username,
         app=""
         )
     return context

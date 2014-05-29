@@ -12,6 +12,9 @@ from monitor.models import *
 from monitor.messages import *
 from monitor.utils import *
 from monitor.forms import PostRecordForm
+from celery.utils.log import get_task_logger
+
+logger = get_task_logger(__name__)
 
 TRANSFER_DICT=dict(website='sitename', 
     title="title", time="time", 

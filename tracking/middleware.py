@@ -27,10 +27,13 @@ class VisitorTrackingMiddleware(object):
             if get_ip_address(request) not in ip_list:
                 print u"sorry you have no power"
                 return HttpResponse(u"sorry you have no power")
-
         if request.path.startswith(reverse('login')):
             return response
+        if request.path.startswith(reverse('logoff')):
+            return response
         if request.path.startswith(reverse('recieve')):
+            return response
+        if request.path.startswith('/admin'):
             return response
         # Session framework not installed, nothing to see here..
         if not hasattr(request, 'session'):
@@ -50,13 +53,13 @@ class VisitorTrackingMiddleware(object):
         user = getattr(request, 'user', None)
         # Check for anonymous users
         # if cookie lost, redo login
-        if not user or not isinstance(user, dict):
+        if not user or not isinstance(user, User):
             return HttpResponseRedirect(reverse("login"))
             # if not TRACK_ANONYMOUS_USERS:
             #     return response
-            user = None
+            # user = None
         #get user instance
-        user = User.objects.get(id=user['id'])
+        # user = User.objects.get(id=user.id)
         # Force a save to generate a session key if one does not exist
         if not request.session.session_key:
             request.session.save()
@@ -76,6 +79,7 @@ class VisitorTrackingMiddleware(object):
         # implies authentication has occured on this request and now
         # the user is object exists. Check using `user_id` to prevent
         # a database hit.
+
         if user and not visitor.user_id:
             visitor.user = user
 

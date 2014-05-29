@@ -7,7 +7,9 @@ class Words(models.Model):
     word = models.CharField(max_length=32)
     nums = models.IntegerField(blank=True, null=True)
     enabled = models.BooleanField(blank=True, default=True)
-
+    
+    def __unicode__(self,):
+        return self.word
 
 class Website(models.Model):
     """观察网站"""

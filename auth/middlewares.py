@@ -30,6 +30,8 @@ class AuthenticationMiddleware(object):
 
     def process_request(self, request):
         #exclude login 
+        if request.path.startswith("/admin"):
+            return None
         if request.path.startswith(reverse('login')):
             return None
         if request.path.startswith(reverse('recieve')):

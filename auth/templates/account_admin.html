@@ -12,7 +12,6 @@
         <tr>
           <th>#</th>
           <th>用户名</th>
-          <th>电话</th>
           <th>邮箱</th>
           <th>操作</th>
         </tr>
@@ -21,10 +20,9 @@
         {% for a in accounts %}
         <tr>
           <td>&nbsp;</td>
-          <td>{{a.name}}</td>
-          <td>{{a.tel}}</td>
-          <td>{{a.email}}</td>
-          <td><a href="{%url 'delete_account' pk=a.id %}">删除</a></td>
+          <td>{{a.user.username}}</td>
+          <td>{{a.user.email}}</td>
+          <td><a href="{%url 'delete_account' pk=a.user.id %}">删除</a></td>
         </tr>
         {% empty %}
         {% endfor %}
@@ -45,11 +43,7 @@
               {% csrf_token %}
               <div class="form-group">
               <label>用户名</label>
-              <input class='form-control' placeholder='输入用户名' name="name" type="text">
-              </div>
-              <div class="form-group">
-              <label>电话</label>
-              <input class='form-control' placeholder='输入电话' name="tel" type="text">
+              <input class='form-control' placeholder='输入用户名' name="username" type="text">
               </div>
               <div class="form-group">
               <label>邮箱</label>
@@ -57,7 +51,11 @@
               </div>
               <div class="form-group">
               <label>密码</label>
-              <input class='form-control' placeholder='输入初始密码' name="password" type="text">
+              <input class='form-control' placeholder='输入初始密码' name="password1" type="text">
+              </div>
+              <div class="form-group">
+              <label>重复密码</label>
+              <input class='form-control' placeholder='再次输入密码' name="password2" type="text">
               </div>
           </div>
           <div class="modal-footer">

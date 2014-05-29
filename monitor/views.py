@@ -20,11 +20,12 @@ from django.utils.safestring import mark_safe
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
 
 from monitor.templatetags.ref import RefNode
 from monitor.models import Words
 from monitor.models import AlarmRecord
-from auth.models import Account
+from auth.models import Account, Team
 from auth.forms import AccountForm
 from auth.utils import encrypt_password
 from tracking.views import dashboard
@@ -189,6 +190,7 @@ class HomeView(BaseView):
     def get(self, request):
         context = {}
         context['home_active'] = 'active'
+        
         page = self.make(request, context)
         return HttpResponse(page)
 
@@ -229,37 +231,6 @@ class Word2Record(BaseView):
         page = self.make(request, context)
         return HttpResponse(page)
 
-
-
-class AccountAdminView(BaseView):
-    template_name = "account_admin.html"    
-
-    def get(self, request):
-        context = {}
-        context['admin_active'] = 'active'
-        page = self.make(request, context)
-        return HttpResponse(page)
-
-    def mod_content(self,):
-        accounts_query = Account.objects.all()
-        page_html = self.include(
-            self.template_name, {"accounts": accounts_query})
-        return page_html
-
-    def post(self, request):
-        form = AccountForm(request.POST)
-        if not form.is_valid():
-            return HttpResponse(u'请填写完整')
-        cleaned_data = form.cleaned_data
-        hashed = encrypt_password(cleaned_data['password']) 
-        cleaned_data['password'] = hashed
-        if Account.objects.filter(email=cleaned_data['email']):
-            return HttpResponse(u"email 已经注册了")
-        try:
-            Account.objects.create(**cleaned_data)
-        except Exception, e:
-            raise e
-        return HttpResponseRedirect(reverse('admin'))
 
 
 class TrackView(BaseView):    

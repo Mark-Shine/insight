@@ -2,6 +2,7 @@
 import json
 
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
 MAX = 3
 MAX_FILES = 5
 
@@ -11,11 +12,9 @@ ZH_ERROR_MSG = {
 'max_length': u"超过最大长度",
 }
 
-class AccountForm(forms.Form):
-    name = forms.CharField(label=u"用户名")
+class AccountForm(UserCreationForm):
+    username = forms.CharField(label=u"用户名")
     email = forms.EmailField(label=u"邮件")
-    tel = forms.CharField(label=u"电话")
-    password = forms.CharField(label=u"密码",)
     
     
     

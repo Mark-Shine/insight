@@ -1,6 +1,6 @@
 #encoding=utf-8
 from django.conf.urls import patterns, include, url
-from monitor.views import AccountAdminView
+from auth.views import AccountAdminView
 from auth.views import ChangePasswordView, delete_account
 
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
