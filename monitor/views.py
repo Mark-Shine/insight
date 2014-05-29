@@ -139,18 +139,23 @@ class BaseView(ViewObject):
     def mod_content(self):
         return ""
 
+    def get_words(self, request):
+        user = request.user
+        words = []
+        if user.is_superuser:
+            words =  Words.objects.filter(enabled=True,)
+        else:
+            team = user.account.team
+            team_query = Team.objects.get(id=team.id)
+            words = team_query.words.filter(enabled=True)
+        return words
 
 # Create your views here.
 class WordsView(BaseView):
     template_name = 'words.html'
 
     def mod_content(self, ): 
-        if self.user.is_superuser:
-            words =  Words.objects.filter(enabled=True,)
-        else:
-            team = self.user.account.team
-            team_query = Team.objects.get(id=team.id)
-            words = team_query.words.filter(enabled=True)
+        words = self.get_words(self.request)
         for w in words:
             w.count = AlarmRecord.objects.filter(word=w.id).count()
 
@@ -162,7 +167,7 @@ class WordsView(BaseView):
 
     def get(self, request, ):
         context = {}
-        self.user = request.user
+        self.request = request
         page = self.make(request, context)
         return HttpResponse(page)
 
@@ -170,7 +175,11 @@ class WordsView(BaseView):
 def add_word(request,):
     if request.method == 'POST':
         word = request.POST.get('word')
-        Words.objects.create(**{"word": word})
+        if user.is_superuser:
+            return HttpResponse(u"请切换到普通用户")
+        team = user.account.team
+        new_word = Words.objects.create(**{"word": word})
+        Team.objects.create(**{'word':new_word, "team": team})
     return HttpResponseRedirect(reverse("words"))
 
 def edit_word(request, pk):
@@ -206,7 +215,8 @@ class RecordViews(BaseView):
     template_name = "records.html"
 
     def mod_content(self, ):
-        records = AlarmRecord.objects.exclude(word=None)
+        team_words = self.get_words(self.request).values_list("id", flat=True)
+        records = AlarmRecord.objects.filter(word__in=team_words)
         for r in records:
             r.word_name = Words.objects.filter(id=r.word)[0].word
         page_html = self.include(
@@ -215,6 +225,7 @@ class RecordViews(BaseView):
 
     def get(self, request):
         context = {}
+        self.request = request
         context['records_active'] = 'active'
         page = self.make(request, context)
         return HttpResponse(page)
