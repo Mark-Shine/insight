@@ -1,6 +1,15 @@
 #encoding=utf-8
 from django.db import models
 
+
+
+class Team(models.Model):
+    name = models.CharField(max_length=128, blank=True, null=True)
+    words = models.ManyToManyField("Words", blank=True, null=True,)
+
+    def __unicode__(self,):
+        return self.name
+
 # Create your models here.
 class Words(models.Model):
     """关键字"""
@@ -10,11 +19,6 @@ class Words(models.Model):
     
     def __unicode__(self,):
         return self.word
-
-class Website(models.Model):
-    """观察网站"""
-    name = models.CharField(max_length=64, blank=True, null=True)
-    host = models.CharField(max_length=64, blank=True, null=True)
 
 
 class AlarmRecord(models.Model):
@@ -38,12 +42,15 @@ class Contact(models.Model):
     email = models.CharField(max_length=64, blank=True, null=True)
     recieve_email = models.CharField(max_length=8, blank=True, null=True)
     recieve_sms = models.CharField(max_length=8, blank=True, null=True)
+    team = models.ForeignKey(Team, blank=True, null=True)
+
 
 class Sites(models.Model):
     """监控的网站"""
-    host = models.CharField(max_length=64, blank=True, null=True)
+    ip = models.CharField(max_length=64, blank=True, null=True)
     name = models.CharField(max_length=64, blank=True, null=True)
     #是否启用
     enabled = models.BooleanField(blank=True, default=True)
+    team = models.ForeignKey(Team, blank=True, null=True)
 
 

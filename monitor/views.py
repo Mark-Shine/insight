@@ -367,9 +367,10 @@ class SitesView(BaseView):
     def post(self, request):
 
         if request.method == 'POST':
-            host = request.POST.get('host')
+            team = request.user.account.team
+            ip = request.POST.get('ip')
             name = request.POST.get('name')
-            Sites.objects.create(**{"host":host, "name":name})
+            Sites.objects.create(**{"ip": ip, "name": name, "team": team})
         return HttpResponseRedirect(reverse("sites"))
 
 def delete_site(request, pk):
@@ -401,7 +402,11 @@ class ContactView(BaseView):
             phone = request.POST.get('phone')
             name = request.POST.get('name')
             email = request.POST.get('email')
-            Contact.objects.create(**{"phone": phone, "name": name, "email": email})
+            team = request.user.account.team
+            Contact.objects.create(**{"phone": phone, 
+                "name": name, 
+                "email": email, 
+                "team": team})
         return HttpResponseRedirect(reverse("contacts"))
 
 def delete_contact(request, pk):

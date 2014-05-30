@@ -12,6 +12,7 @@ from django.db.models.signals import post_save, pre_delete
 from tracking.managers import VisitorManager, PageviewManager
 from tracking.settings import TRACK_USING_GEOIP
 from .compat import User
+from monitor.models import Team
 
 GEOIP_CACHE_TYPE = getattr(settings, 'GEOIP_CACHE_TYPE', 4)
 
@@ -82,6 +83,7 @@ class Pageview(models.Model):
 
 class WhiteList(models.Model):
     ip_address = models.CharField(max_length=39, editable=False)
+    team = models.ForeignKey(Team, blank=True, null=True)
     
 
 

@@ -12,7 +12,7 @@
         <tr>
           <th>#</th>
           <th>站点名称</th>
-          <th>Ip</th>
+          <th>IP</th>
           <th>状态</th>
           <th>操作</th>
         </tr>
@@ -22,7 +22,7 @@
         <tr>
           <td>{{forloop.counter}}</td>
           <td>{{w.name}}</td>
-          <td> {{w.host}}</td>
+          <td> {{w.ip}}</td>
           <td> status</td>
           <td><a href="{%url 'delete_site' pk=w.id %}">删除</a></td>
         </tr>
@@ -48,8 +48,8 @@
               <input class='form-control' placeholder='输入站点名称' name="name" type="text">
               </div>
               <div class="form-group">
-              <label>HOST</label>
-              <input class='form-control' placeholder='输入站点HOST' name="host" type="text">
+              <label>IP</label>
+              <input class='form-control' placeholder='输入站点IP' name="ip" type="text">
               </div>
           </div>
           <div class="modal-footer">

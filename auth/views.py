@@ -118,8 +118,7 @@ class AccountAdminView(BaseView):
         del cleaned_data['password2']
         team = Team.objects.get(id=self.user.account.team.id)
         new_user = User.objects.create_user(**cleaned_data)
-        new_user.account.team = self.user.account.team
-        new_user.account.save()
+        Account.objects.get_or_create(user=new_user, team=self.user.account.team) 
         return HttpResponseRedirect(reverse('admin'))
 
 

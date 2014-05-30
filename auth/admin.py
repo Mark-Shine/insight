@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
-from .models import Team, Account
+from auth.models import Account
+from monitor.models import Team
 
 class TeamInline(admin.TabularInline):
     model = Team
