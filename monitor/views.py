@@ -283,6 +283,7 @@ class PageView(BaseView):
 
     def get(self, request, pk=None):
         context = {}
+        self.user = request.user
         self.pagenum = request.GET.get('page')
         context['track_active'] = 'active'
         self.mode = pk and 'detail' or 'tolist'
@@ -296,7 +297,12 @@ class PageView(BaseView):
         return Pageview.objects.filter(visitor_id__in=visitor_query)
 
     def tolist(self, ):
-        return Pageview.objects.all()
+        """只返回该组队员的记录"""
+        team = self.user.account.team
+        accounts = Account.objects.filter(team=team)
+        users = [ account.user for account in accounts ]
+        visitors = Visitor.objects.filter(user__in=users)
+        return Pageview.objects.all().filter(visitor__in=visitors)
 
     def mod_content(self, ):
         func = getattr(self, self.mode)
