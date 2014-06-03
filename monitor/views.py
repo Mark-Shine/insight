@@ -253,7 +253,7 @@ class RecordViews(BaseView):
 
     def mod_content(self, ):
         team_words = self.get_words(self.request).values_list("id", flat=True)
-        records = AlarmRecord.objects.filter(word__in=team_words)
+        records = AlarmRecord.objects.filter(word__in=team_words).order_by("-time",)
         for r in records:
             r.word_name = Words.objects.filter(id=r.word)[0].word
         page_html = self.include(
