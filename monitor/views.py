@@ -147,7 +147,6 @@ class BaseView(ViewObject):
             words =  Words.objects.filter(enabled=True,)
         else:
             team = user.account.team
-            # team_query = Team.objects.get(id=team.id)
             words = Words.objects.filter(team__id=team.id)
         return words
 
@@ -225,14 +224,25 @@ class HomeView(BaseView):
     template_name = 'home.html'
 
     def mod_content(self, ):
+        team_words = self.get_words(self.request).values_list("id", flat=True)
+        records = AlarmRecord.objects.filter(word__in=team_words)
+        team = self.request.user.account.team
+        sites = Sites.objects.filter(team=team) 
+        accounts = Account.objects.filter(team=team)
+        context = {
+            "team_words": team_words,
+            "records": records,
+            "sites": sites,
+            "accounts": accounts,
+        }
         page_html = self.include(
-            self.template_name, {})
+            self.template_name, context)
         return page_html
 
     def get(self, request):
         context = {}
         context['home_active'] = 'active'
-        
+        self.request = request
         page = self.make(request, context)
         return HttpResponse(page)
 
@@ -386,7 +396,7 @@ class SitesView(BaseView):
         return HttpResponse(page)
 
     def mod_content(self, ):
-        sites = Sites.objects.all()
+        sites = Sites.objects.filter(team=self.request.user.account.team)
         page_html = self.include(
             self.template_name, {"sites": sites})
         return page_html
