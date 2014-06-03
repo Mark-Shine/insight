@@ -148,7 +148,7 @@ class BaseView(ViewObject):
         else:
             team = user.account.team
             # team_query = Team.objects.get(id=team.id)
-            words = Words.objects.filter(team__id=team.id).filter(enabled=True)
+            words = Words.objects.filter(team__id=team.id)
         return words
 
 # Create your views here.
@@ -198,9 +198,9 @@ def add_word(request,):
             return HttpResponse(u"请切换到普通用户")
         team = user.account.team
         try:
-            new_word = Words.objects.create(**{"word": word,})
-            new_word.team.add(team)
-            new_word.save()
+            word, created = Words.objects.get_or_create(**{"word": word,})
+            word.team.add(team)
+            word.save()
             # Team_words.objects.create(**{"word": new_word, "team": team})
         except Exception, e:
             raise e
@@ -212,8 +212,10 @@ def edit_word(request, pk):
 
 
 def delete_word(request, pk):
+    user = request.user
     word = get_object_or_404(Words, id=pk)
-    word.enabled = False
+    team = user.account.team
+    word.team.remove(team)
     word.save()
     return HttpResponseRedirect(reverse("words"))
 
