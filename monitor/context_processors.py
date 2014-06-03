@@ -6,9 +6,13 @@ def common(request):
     user = request.user
     if not isinstance(user, User):
         return {}
-
+    if not user.is_superuser:
+        team = user.account.team.name
+    else:
+        team = ''
     context = dict(
         USER_NAME=user.username,
+        TEAM=team,
         app=""
         )
     return context

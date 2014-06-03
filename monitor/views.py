@@ -25,7 +25,8 @@ from django.contrib.auth.models import User
 from monitor.templatetags.ref import RefNode
 from monitor.models import Words
 from monitor.models import AlarmRecord
-from auth.models import Account, Team
+from monitor.models import Team
+from auth.models import Account
 from auth.forms import AccountForm
 from auth.utils import encrypt_password
 from tracking.views import dashboard
@@ -146,40 +147,64 @@ class BaseView(ViewObject):
             words =  Words.objects.filter(enabled=True,)
         else:
             team = user.account.team
-            team_query = Team.objects.get(id=team.id)
-            words = team_query.words.filter(enabled=True)
+            # team_query = Team.objects.get(id=team.id)
+            words = Words.objects.filter(team__id=team.id).filter(enabled=True)
         return words
 
 # Create your views here.
 class WordsView(BaseView):
     template_name = 'words.html'
 
+    def get_pagination(self, objects):
+        """分页"""
+        pagenum = int(self.pagenum or 1)
+        paged_objects = paginate(objects, pagenum)
+        paged_objects.search_url = reverse('pageview')
+        pagination = self.include('monitor/pagination.html', {
+            'page_count': range(1, int(paged_objects.page_count)+1),
+            'objects':paged_objects,
+            'next_two': paged_objects.number + 2,
+            'next_three':paged_objects.number + 3,
+            'prev_two':paged_objects.number -2,
+            'loop_times':range(1,6)})
+        return paged_objects, pagination
+
+
     def mod_content(self, ): 
         words = self.get_words(self.request)
         for w in words:
             w.count = AlarmRecord.objects.filter(word=w.id).count()
-
+        paged_objects, pagination = self.get_pagination(words)
         context = {}
         context['words_active'] = 'active'
-        context['words'] = words
+        context['words'] = paged_objects
+        context['pagination'] = pagination
         page_html = self.include(self.template_name, context)
         return page_html
 
     def get(self, request, ):
         context = {}
         self.request = request
+        self.pagenum = request.GET.get('page')
         page = self.make(request, context)
         return HttpResponse(page)
 
 
 def add_word(request,):
+    user = request.user
     if request.method == 'POST':
         word = request.POST.get('word')
         if user.is_superuser:
             return HttpResponse(u"请切换到普通用户")
         team = user.account.team
-        new_word = Words.objects.create(**{"word": word})
-        Team.objects.create(**{'word':new_word, "team": team})
+        try:
+            new_word = Words.objects.create(**{"word": word,})
+            new_word.team.add(team)
+            new_word.save()
+            # Team_words.objects.create(**{"word": new_word, "team": team})
+        except Exception, e:
+            raise e
+        # Team.objects.create(**{'words':new_word, "team": team})
     return HttpResponseRedirect(reverse("words"))
 
 def edit_word(request, pk):
@@ -247,7 +272,6 @@ class Word2Record(BaseView):
         context['records_active'] = 'active'
         page = self.make(request, context)
         return HttpResponse(page)
-
 
 
 class TrackView(BaseView):    
@@ -336,6 +360,7 @@ def add_ip(request, ):
         WhiteList.objects.create(**{"ip_address": ip_str})
     return HttpResponseRedirect(reverse("whitelist"))
 
+
 def delete_ip(request, pk):
     ip_query = get_object_or_404(WhiteList, id=pk)
     ip_query.delete()
@@ -372,6 +397,7 @@ class SitesView(BaseView):
             name = request.POST.get('name')
             Sites.objects.create(**{"ip": ip, "name": name, "team": team})
         return HttpResponseRedirect(reverse("sites"))
+
 
 def delete_site(request, pk):
     """删除监控的站点"""

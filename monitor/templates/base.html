@@ -20,12 +20,14 @@
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
               </button>
               <a class="navbar-brand" href="#">煎茶</a>
             </div>
             <div class="navbar-collapse collapse">
               <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">{{USER_NAME}}</a></li>
+                <li><a href="#">所属团队：{{TEAM}}</a></li>
+                <li><a href="#">当前用户：{{USER_NAME}}</a></li>
                 <li><a href="{%url 'change_pw'%}">修改密码</a></li>
                 <li><a href="{%url 'logoff'%}">退出</a></li>
               </ul>

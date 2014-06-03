@@ -5,7 +5,6 @@ from django.db import models
 
 class Team(models.Model):
     name = models.CharField(max_length=128, blank=True, null=True)
-    words = models.ManyToManyField("Words", blank=True, null=True,)
 
     def __unicode__(self,):
         return self.name
@@ -16,6 +15,7 @@ class Words(models.Model):
     word = models.CharField(max_length=32)
     nums = models.IntegerField(blank=True, null=True)
     enabled = models.BooleanField(blank=True, default=True)
+    team = models.ManyToManyField("Team", blank=True, null=True,)
     
     def __unicode__(self,):
         return self.word
