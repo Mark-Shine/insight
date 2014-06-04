@@ -2,8 +2,9 @@
 from django.core.mail import send_mass_mail
 from django.core.mail import EmailMultiAlternatives  
 from django.template import Context, loader  
+from django.conf import settings
 
-EMAIL_HOST_USER = 'admin@a2.com'
+EMAIL_HOST_USER = settings.EMAIL_HOST_USER
 def build_message(recipient_list=['szh1216@gmail.com'], 
         message='alarm', subject="inform", from_email="alarm@moni.com"):
     

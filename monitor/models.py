@@ -33,7 +33,7 @@ class AlarmRecord(models.Model):
     ip_and_port = models.CharField(max_length=32, blank=True, null=True)
     #关键字
     word = models.IntegerField(blank=True, null=True)
-
+    
 
 class Contact(models.Model):
     """联系人表"""

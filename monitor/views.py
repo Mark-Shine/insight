@@ -483,7 +483,6 @@ class SearchWord(BaseView):
         key = self.request.GET.get("key")
         context = {}
         if  key :
-            
             q = Words.objects.filter(word__contains=key)
             paged_objects, pagination = self.get_pagination(q)
             context['words'] = paged_objects
