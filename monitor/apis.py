@@ -67,13 +67,13 @@ def recieve_data(request):
     except Exception, e:
         print "trasn error"
         print e
-    print data
     try:
         #获取许可的站点
-        sites = Sites.objects.all().values_list('host', flat=True)
+        sites = Sites.objects.all().values_list('ip', flat=True)
         request_ip = request.META['REMOTE_ADDR']
+        print sites
         if request_ip not in sites:
-            print "ip not allowed"
+            print "ip %s  not allowed" % request_ip
             return HttpResponse('not allowed')
         filter_task.delay(data)
     except Exception, e:

@@ -61,27 +61,32 @@ def search_and_match(data, chars=[]):
     return (False, "")
 
 
-def alarm():
+def alarm(a_message=[]):
     """警报"""
     users = Contact.objects.all()
     msg = dict(users=users,)
     contacts = Contact.objects.all().values_list("email", flat=True)
-    msg = {"content": u"你好，这里是煎茶系统"}
-    do_sendmail(msg=msg, mail_list=contacts)
-    # do_sendsms()
+    msg = {}
+
+    title = u"%s 网站出现非法关键词“%s”警报提示！" %(site, word)
+    do_sendmail(msg=msg, mail_list=contacts, )
+
+
+def new_alarm(a_message):
+    users = Contact.objects.all()
+    msg = dict(users=users, )
+    contacts = Contact.objects.all().values_list("email", flat=True)
+    for a in a_message:
+        a['word'] = Words.objects.get(id=a['word']).word
+    msg = {"a_message": a_message}
+    title = u"网站出现非法关键词警报提示！"
+    do_sendmail(msg=msg, mail_list=contacts, title=title)
+
 
 
 def urldecode_to_utf8(dict_data):
     for k, v in dict_data.items():
         urldecode_data = urllib.unquote(str(v))
-        # encoding = chardet.detect(urldecode_data).get("encoding")
-        # if encoding:
-        #     try:
-        #         unicode_data = unicode(urldecode_data, encoding)
-        #     except Exception, e:
-        #         print "error in urldecode_data encode"
-        #         raise e
-        # else:
         try:
             unicode_data = unicode(urldecode_data, 'utf-8')
         except Exception, e:
@@ -116,16 +121,18 @@ def filter_task(post_data):
         if flag:
             post['word'] = int(char_id)
             a_message.append(post)
-            try:
-                alarm()
-            except Exception, e:
-                raise e
+            
         _post = transfer_dict(post)
         form = PostRecordForm(_post)
         if form.is_valid():
             cleaned_data = form.cleaned_data
             result.append(AlarmRecord(**cleaned_data))
-            
+    
+    if a_message:
+        try:
+            new_alarm(a_message)
+        except Exception, e:
+            raise e 
     #批量创建记录
     AlarmRecord.objects.bulk_create(result)
     return result
