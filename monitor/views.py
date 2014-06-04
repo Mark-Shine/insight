@@ -175,7 +175,6 @@ class WordsView(BaseView):
             w.count = AlarmRecord.objects.filter(word=w.id).count()
         paged_objects, pagination = self.get_pagination(words)
         context = {}
-        context['words_active'] = 'active'
         context['words'] = paged_objects
         context['pagination'] = pagination
         page_html = self.include(self.template_name, context)
@@ -185,6 +184,7 @@ class WordsView(BaseView):
         context = {}
         self.request = request
         self.pagenum = request.GET.get('page')
+        context['words_active'] = 'active'
         page = self.make(request, context)
         return HttpResponse(page)
 
@@ -200,10 +200,8 @@ def add_word(request,):
             word, created = Words.objects.get_or_create(**{"word": word,})
             word.team.add(team)
             word.save()
-            # Team_words.objects.create(**{"word": new_word, "team": team})
         except Exception, e:
             raise e
-        # Team.objects.create(**{'words':new_word, "team": team})
     return HttpResponseRedirect(reverse("words"))
 
 def edit_word(request, pk):
@@ -453,6 +451,47 @@ def delete_contact(request, pk):
     contacts.delete()
     return HttpResponseRedirect(reverse("contacts"))
 
+
+class SearchWord(BaseView):
+    template_name = 'words.html'
+
+    def get_pagination(self, objects):
+        """分页"""
+        pagenum = int(self.pagenum or 1)
+        paged_objects = paginate(objects, pagenum)
+        paged_objects.search_url = reverse('pageview')
+        pagination = self.include('monitor/pagination.html', {
+            'page_count': range(1, int(paged_objects.page_count)+1),
+            'objects':paged_objects,
+            'next_two': paged_objects.number + 2,
+            'next_three':paged_objects.number + 3,
+            'prev_two':paged_objects.number -2,
+            'loop_times':range(1,6)})
+        return paged_objects, pagination
+
+
+    def get(self, request):
+        self.request = request
+        self.pagenum = request.GET.get('page')
+        context = {}
+        context['words_active'] = 'active'
+        page = self.make(request, context)
+        return HttpResponse(page)
+        
+
+    def mod_content(self, ):
+        key = self.request.GET.get("key")
+        context = {}
+        if  key :
+            
+            q = Words.objects.filter(word__contains=key)
+            paged_objects, pagination = self.get_pagination(q)
+            context['words'] = paged_objects
+            context['pagination'] = pagination
+        page_html = self.include(self.template_name, context)
+        return page_html
+
+        
 
 
 
