@@ -1,6 +1,6 @@
 <p>您好,煎茶系统监控到以下信息：</p>
 {%for a in a_message %}
-<p>{{a.website}}网站出现非法关键词：{{a.word}}，发帖人为：{{a.user_name}}   IP地址端口：{{a.ip_and_port}}  发帖时间为：{{a.time}} <a href="{{a.url}}">查看</a></p>
+<p>{{a.website}}网站出现非法关键词：{{a.word}}，发帖人为：{{a.user_name}} ，IP地址端口：{{a.ip_and_port}}  发帖时间为：{{a.time}} <a href="{{a.url}}">查看</a></p>
 {%endfor%}
 <p><a href="http://jc.teabox.cc">登录</a>---煎茶后台系统</p>
 

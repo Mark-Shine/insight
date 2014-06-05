@@ -73,15 +73,20 @@ def alarm(a_message=[]):
 
 
 def new_alarm(a_message):
+    words = []
     users = Contact.objects.all()
+    teams = []
     msg = dict(users=users, )
-    contacts = Contact.objects.all().values_list("email", flat=True)
     for a in a_message:
         a['word'] = Words.objects.get(id=a['word']).word
+        words.append(Words.objects.get(id=a['word']))
+    #add related teams to contact list
+    [teams.extend(list(word.team.all())) for word in words ]
+    #only notify team whose word is alarmed
+    contacts = Contact.objects.filter(team__in=teams).values_list("email", flat=True)
     msg = {"a_message": a_message}
     title = u"网站出现非法关键词警报提示！"
     do_sendmail(msg=msg, mail_list=contacts, title=title)
-
 
 
 def urldecode_to_utf8(dict_data):
