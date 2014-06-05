@@ -1,4 +1,5 @@
 #encoding=utf-8
+import json
 from django.utils import timezone
 from django.contrib.auth.hashers import check_password
 from django.db import connection
