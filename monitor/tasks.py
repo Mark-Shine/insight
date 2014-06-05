@@ -78,8 +78,8 @@ def new_alarm(a_message):
     teams = []
     msg = dict(users=users, )
     for a in a_message:
-        a['word'] = Words.objects.get(id=a['word']).word
         words.append(Words.objects.get(id=a['word']))
+        a['word'] = Words.objects.get(id=a['word']).word
     #add related teams to contact list
     [teams.extend(list(word.team.all())) for word in words ]
     #only notify team whose word is alarmed
