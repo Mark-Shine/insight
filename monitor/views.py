@@ -423,12 +423,14 @@ class ContactView(BaseView):
 
     def get(self, request):
         context = {}
+        self.request = request
         context['contacts_active'] = 'active'
         page = self.make(request, context)
         return HttpResponse(page)
 
     def mod_content(self, ):
-        contacts = Contact.objects.all()
+        team = self.request.user.account.team
+        contacts = Contact.objects.filter(team=team)
         page_html = self.include(
             self.template_name, {"contacts": contacts})
         return page_html
