@@ -6,6 +6,7 @@
           <th>#</th>
           <th>网站名字</th>
           <th>帖子标题</th>
+          <th>楼层</th>
           <th>时间</th>
           <th>用户名</th>
           <th>IP和端口</th>
@@ -19,6 +20,7 @@
           <td>{{forloop.counter}}</td>
           <td>{{r.website}}</td>
           <td>{{r.title}}</td>
+          <td>{{r.position|default_if_none:"n/a"}}</td>
           <td>{{r.time|date:"Y-m-d H:i"}}</td>
           <td>{{r.user_name}}</td>
           <td>{{r.ip_and_port}}</td>

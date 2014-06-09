@@ -20,5 +20,5 @@ class PostRecordForm(forms.Form):
     url = forms.URLField(label=u"url")
     ip_and_port = forms.CharField(label=u"ip")
     word = forms.IntegerField(required=False)
-    
+    position = forms.CharField(max_length=8, label=u"楼层")
     
