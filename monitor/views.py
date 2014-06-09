@@ -150,6 +150,22 @@ class BaseView(ViewObject):
             words = Words.objects.filter(team__id=team.id)
         return words
 
+    def get_pagination(self, objects):
+        """分页"""
+        pagenum = int(self.pagenum or 1)
+        paged_objects = paginate(objects, pagenum)
+        paged_objects.search_url = reverse('pageview')
+        pagination = self.include('monitor/pagination.html', {
+            'page_count': range(1, int(paged_objects.page_count)+1),
+            'objects':paged_objects,
+            'next_two': paged_objects.number + 2,
+            'next_three':paged_objects.number + 3,
+            'prev_two':paged_objects.number -2,
+            'loop_times':range(1,6)})
+        return paged_objects, pagination
+
+
+
 # Create your views here.
 class WordsView(BaseView):
     template_name = 'words.html'
@@ -254,14 +270,16 @@ class RecordViews(BaseView):
         records = AlarmRecord.objects.filter(word__in=team_words).order_by("-time",)
         for r in records:
             r.word_name = Words.objects.filter(id=r.word)[0].word
+        paged_objects, pagination = self.get_pagination(records)
         page_html = self.include(
-            self.template_name, {"records": records})
+            self.template_name, {"records": paged_objects, "pagination": pagination})
         return page_html
 
     def get(self, request):
         context = {}
         self.request = request
         context['records_active'] = 'active'
+        self.pagenum = request.GET.get('page')
         page = self.make(request, context)
         return HttpResponse(page)
 
@@ -270,15 +288,17 @@ class Word2Record(BaseView):
     template_name = "word2records.html"
 
     def mod_content(self, ):
-        records = AlarmRecord.objects.filter(word=int(self.pk))
+        records = AlarmRecord.objects.filter(word=int(self.pk)).order_by("-time",)
+        paged_objects, pagination = self.get_pagination(records)
         word = Words.objects.filter(id=self.pk)[0].word
         page_html = self.include(
-            self.template_name, {"records": records, "word": word})
+            self.template_name, {"records": paged_objects, "word": word, "pagination": pagination})
         return page_html
 
     def get(self, request, pk):
         context = {}
         self.pk = pk
+        self.pagenum = request.GET.get('page')
         context['records_active'] = 'active'
         page = self.make(request, context)
         return HttpResponse(page)
@@ -300,20 +320,6 @@ class TrackView(BaseView):
 
 class PageView(BaseView):
     template_name = "tracking/pageview.html"
-
-    def get_pagination(self, objects):
-        """分页"""
-        pagenum = int(self.pagenum or 1)
-        paged_objects = paginate(objects, pagenum)
-        paged_objects.search_url = reverse('pageview')
-        pagination = self.include('monitor/pagination.html', {
-            'page_count': range(1, int(paged_objects.page_count)+1),
-            'objects':paged_objects,
-            'next_two': paged_objects.number + 2,
-            'next_three':paged_objects.number + 3,
-            'prev_two':paged_objects.number -2,
-            'loop_times':range(1,6)})
-        return paged_objects, pagination
 
     def get(self, request, pk=None):
         context = {}
@@ -457,19 +463,6 @@ def delete_contact(request, pk):
 class SearchWord(BaseView):
     template_name = 'words.html'
 
-    def get_pagination(self, objects):
-        """分页"""
-        pagenum = int(self.pagenum or 1)
-        paged_objects = paginate(objects, pagenum)
-        paged_objects.search_url = reverse('pageview')
-        pagination = self.include('monitor/pagination.html', {
-            'page_count': range(1, int(paged_objects.page_count)+1),
-            'objects':paged_objects,
-            'next_two': paged_objects.number + 2,
-            'next_three':paged_objects.number + 3,
-            'prev_two':paged_objects.number -2,
-            'loop_times':range(1,6)})
-        return paged_objects, pagination
 
 
     def get(self, request):
