@@ -290,7 +290,9 @@ class RecordViews(BaseView):
         page = self.make(request, context)
         return HttpResponse(page)
 
+
 def change_record_state(request):
+    """更新记录状态"""
     next = request.GET.get("next")
     if request.method == "POST":
         user = request.user
