@@ -10,18 +10,34 @@
           <th>用户名</th>
           <th>链接地址</th>
           <th>IP和端口</th>
+          <th>操作</th>
         </tr>
       </thead>
       <tbody>
         {% for r in records %}
         <tr>
-          <td>{{forloop.counter}}</td>
+          <td>
+              {%if r.state %}
+              <span class="glyphicon glyphicon-ok"></span>
+              {%else%}
+              {%endif%}
+          </td>
           <td>{{r.website}}</td>
           <td>{{r.title}}</td>
           <td>{{r.time|date:"Y-m-d H:i"}}</td>
           <td>{{r.user_name}}</td>
           <td><a href="{{r.url}}" target="view_window" >地址</a></td>
           <td>{{r.ip_and_port}}</td>
+          <td>
+            <form class="form-inline "action="{%url 'update_record_state'%}?next={%url 'word2recod' pk=r.word %}" method="POST">
+            {%csrf_token%}
+              <div class="form-group">
+              <input class="hidden" value="{{r.id}}" name="pk">
+              <input class="hidden" value="1" name="state">
+              <button class="btn btn-default">处理</button>
+              </div>  
+            </form>
+          </td>
         </tr>
         {% empty %}
         {% endfor %}
