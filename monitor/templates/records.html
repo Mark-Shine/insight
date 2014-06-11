@@ -12,12 +12,18 @@
           <th>IP和端口</th>
           <th>关键字</th>
           <th>链接地址</th>
+          <th>处理</th>
         </tr>
       </thead>
       <tbody>
         {% for r in records %}
         <tr>
-          <td>{{forloop.counter}}</td>
+          <td>
+              {%if r.state %}
+              <span class="glyphicon glyphicon-ok"></span>
+              {%else%}
+              {%endif%}
+          </td>
           <td>{{r.website}}</td>
           <td style="width: 400px">{{r.title}}</td>
           <td>{{r.position|default_if_none:"n/a"}}</td>
@@ -26,6 +32,16 @@
           <td>{{r.ip_and_port}}</td>
           <td><a href="{%url 'word2recod' pk=r.word %}">{{r.word_name}}</a></td>
           <td><a href="{{r.url}}" target="view_window" >打开</a></td>
+          <td>
+            <form class="form-inline "action="{%url 'update_record_state'%}?next={% url 'records' %}" method="POST">
+            {%csrf_token%}
+              <div class="form-group">
+              <input class="hidden" value="{{r.id}}" name="pk">
+              <input class="hidden" value="1" name="state">
+              <button class="btn btn-info inline">处理</button>
+              </div>  
+            </form>
+          </td>
         </tr>
         {% empty %}
         {% endfor %}

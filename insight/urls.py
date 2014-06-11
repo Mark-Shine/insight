@@ -9,7 +9,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from monitor.views import IpControlView
 from monitor.views import add_ip, delete_ip
 from monitor.views import sendmail
-from monitor.views import SitesView, delete_site
+from monitor.views import SitesView, delete_site, change_record_state
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
@@ -21,6 +21,7 @@ urlpatterns = patterns('',
     url(r'^logoff$', 'auth.views.logoff', name='logoff'),
     url(r'^api/test$', recieve_data, name="recieve"),
     url(r'^records$', RecordViews.as_view(), name="records"),
+    url(r'^record/update$', change_record_state, name="update_record_state"),
     url(r'^watchsites$', SitesView.as_view(), name="sites"),
     url(r'^watchsites/add$', SitesView.as_view(), name="add_site"),
     url(r'^watchsites/delete/(?P<pk>\d+)$', delete_site, name="delete_site"),

@@ -290,6 +290,20 @@ class RecordViews(BaseView):
         page = self.make(request, context)
         return HttpResponse(page)
 
+def change_record_state(request):
+    next = request.GET.get("next")
+    if request.method == "POST":
+        user = request.user
+        state = request.POST.get('state')
+        pk = request.POST.get("pk")
+        a_record = AlarmRecord.objects.get(id=pk)
+        a_record.state = int(state)
+        a_record.save()
+        after_action.send(sender=a_record.__class__, 
+                user=user, instance=a_record, 
+                action=u"处理")
+
+    return HttpResponseRedirect(next)
 
 class Word2Record(BaseView):
     template_name = "word2records.html"

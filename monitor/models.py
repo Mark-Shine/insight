@@ -22,7 +22,7 @@ class Words(models.Model):
     team = models.ManyToManyField("Team", blank=True, null=True,)
     
     def __unicode__(self,):
-        return u"关键词: %s-%s" %(self.id, self.word)
+        return u"关键词：%s-%s" %(self.id, self.word)
 
 
 class AlarmRecord(models.Model):
@@ -42,7 +42,7 @@ class AlarmRecord(models.Model):
     state = models.IntegerField(blank=True, default=0, choices=((0, u"未处理"), (1, "已处理")))
 
     def __unicode__(self,):
-        return u"警告记录: %s-%s" %(self.id, self.title)
+        return u"警告记录：%s-%s" %(self.id, self.title)
 
 
 
@@ -73,7 +73,7 @@ class Contact(models.Model):
     team = models.ForeignKey(Team, blank=True, null=True)
 
     def __unicode__(self,):
-        return u"联系人: %s-%s" %(self.id, self.name)
+        return u"联系人：%s-%s" %(self.id, self.name)
 
 class Sites(models.Model):
     """监控的网站"""
@@ -84,7 +84,7 @@ class Sites(models.Model):
     team = models.ForeignKey(Team, blank=True, null=True)
 
     def __unicode__(self,):
-        return u"监控站点: %s-%s" %(self.id, self.ip)
+        return u"监控站点：%s-%s" %(self.id, self.ip)
 
 
 
