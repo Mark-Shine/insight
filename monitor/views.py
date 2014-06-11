@@ -21,6 +21,7 @@ from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
 
 from monitor.templatetags.ref import RefNode
 from monitor.models import Words
@@ -35,7 +36,8 @@ from .utils import paginate, page
 from tracking.models import WhiteList
 from .messages import do_sendmail
 from .models import Sites, Contact
-
+from monitor.signals import after_action
+from monitor.models import ActionRecord
 
 class ViewObject(View):
     """
@@ -214,10 +216,14 @@ def add_word(request,):
         team = user.account.team
         try:
             word, created = Words.objects.get_or_create(**{"word": word,})
+            after_action.send(sender=word.__class__, 
+                user=user, instance=word, 
+                action=u"添加")
             word.team.add(team)
             word.save()
         except Exception, e:
             raise e
+
     return HttpResponseRedirect(reverse("words"))
 
 def edit_word(request, pk):
@@ -230,8 +236,10 @@ def delete_word(request, pk):
     team = user.account.team
     word.team.remove(team)
     word.save()
+    after_action.send(sender=word.__class__, 
+                user=user, instance=word, 
+                action=u"删除")
     return HttpResponseRedirect(reverse("words"))
-
 
 
 class HomeView(BaseView):
@@ -259,7 +267,6 @@ class HomeView(BaseView):
         self.request = request
         page = self.make(request, context)
         return HttpResponse(page)
-
 
 
 class RecordViews(BaseView):
@@ -372,14 +379,22 @@ class IpControlView(BaseView):
 
 def add_ip(request, ):
     if request.method == 'POST':
+        user = request.user
         ip_str = request.POST.get('ip_str')
-        WhiteList.objects.create(**{"ip_address": ip_str})
+        white = WhiteList.objects.create(**{"ip_address": ip_str})
+        after_action.send(sender=white.__class__, 
+                user=user, instance=white, 
+                action=u"添加")
     return HttpResponseRedirect(reverse("whitelist"))
 
 
 def delete_ip(request, pk):
-    ip_query = get_object_or_404(WhiteList, id=pk)
-    ip_query.delete()
+    user = request.user
+    white = get_object_or_404(WhiteList, id=pk)
+    white.delete()
+    after_action.send(sender=white.__class__, 
+                user=user, instance=white, 
+                action=u"添加")
     return HttpResponseRedirect(reverse("whitelist"))
 
 
@@ -408,10 +423,15 @@ class SitesView(BaseView):
     def post(self, request):
 
         if request.method == 'POST':
+            user = request.user
             team = request.user.account.team
             ip = request.POST.get('ip')
             name = request.POST.get('name')
-            Sites.objects.create(**{"ip": ip, "name": name, "team": team})
+            sites = Sites.objects.create(**{"ip": ip, "name": name, "team": team})
+            after_action.send(sender=sites.__class__, 
+                user=user, instance=sites, 
+                action=u"添加")
+
         return HttpResponseRedirect(reverse("sites"))
 
 
@@ -419,6 +439,9 @@ def delete_site(request, pk):
     """删除监控的站点"""
     sites = get_object_or_404(Sites, id=pk)
     sites.delete()
+    after_action.send(sender=word.__class__, 
+                user=user, instance=sites, 
+                action=u"删除")
     return HttpResponseRedirect(reverse("sites"))
 
 
@@ -443,26 +466,35 @@ class ContactView(BaseView):
 
     def post(self, request):
         if request.method == 'POST':
+            user = request.user
             phone = request.POST.get('phone')
             name = request.POST.get('name')
             email = request.POST.get('email')
             team = request.user.account.team
-            Contact.objects.create(**{"phone": phone, 
+            contact = Contact.objects.create(**{"phone": phone, 
                 "name": name, 
                 "email": email, 
                 "team": team})
+            after_action.send(sender=contact.__class__, 
+                user=user, instance=contact, 
+                action=u"添加")
+
         return HttpResponseRedirect(reverse("contacts"))
+
 
 def delete_contact(request, pk):
     """删除联系人"""
+    user = request.user
     contacts = get_object_or_404(Contact, id=pk)
     contacts.delete()
+    after_action.send(sender=word.__class__, 
+                user=user, instance=contacts, 
+                action=u"删除")
     return HttpResponseRedirect(reverse("contacts"))
 
 
 class SearchWord(BaseView):
     template_name = 'words.html'
-
 
 
     def get(self, request):
@@ -485,7 +517,40 @@ class SearchWord(BaseView):
         page_html = self.include(self.template_name, context)
         return page_html
 
-        
 
+class AcRecordView(BaseView):
+    template_name = "monitor/actionrecords.html"
+
+    def get(self, request, pk=None):
+        context = {}
+        self.user = request.user
+        self.pagenum = request.GET.get('page')
+        context['ac_active'] = 'active'
+        self.mode = pk and 'detail' or 'tolist'
+        self.request = request
+        self.pk = pk
+        page = self.make(request, context)
+        return HttpResponse(page)
+
+    def detail(self,):
+        ac = ActionRecord.objects.filter(user_id=self.pk).select_related()
+        return ac
+
+    def tolist(self, ):
+        """只返回该组队员的记录"""
+        team = self.user.account.team
+        accounts = Account.objects.filter(team=team)
+        users = [ account.user for account in accounts ]
+        ac = ActionRecord.objects.filter(user__in=users).select_related()
+        return ac
+
+    def mod_content(self, ):
+        func = getattr(self, self.mode)
+        record_query = func()
+        paged_objects, pagination = self.get_pagination(record_query)
+        context = {}
+        page_html = self.include(
+            self.template_name, {"record_query": paged_objects,"pagination": pagination})
+        return page_html
 
 

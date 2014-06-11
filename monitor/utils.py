@@ -2,7 +2,12 @@
 import math
 import re
 from django.core.paginator import Paginator
+
 PAGE_SIZE = 20
+
+    
+
+
 
 def page(objects, num):
     paginator = Paginator(objects, PAGE_SIZE)

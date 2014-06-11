@@ -21,11 +21,12 @@ class Account(models.Model):
     # create_time = date_joined
 
     def __unicode__(self,):
-        return self.user.username
+        return u"用户：%s-%s" %(self.user.id, self.user.username)
 
     class Meta:
         verbose_name = "Account"
         verbose_name_plural = "Account"
+
 
     # def create_user_profile(sender, instance, created, **kwargs):  
     #     if created:  

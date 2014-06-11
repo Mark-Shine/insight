@@ -15,6 +15,8 @@ urlpatterns = patterns(
     url(r'^contact/add$', views.ContactView.as_view(), name='add_contact'),
     url(r'^contact/delete/(?P<pk>\d+)$', 'delete_contact', name='delete_contact'),
     url(r'^search$', views.SearchWord.as_view(), name="search_word"),
+    url(r'^acrecord$', views.AcRecordView.as_view(), name="ac_record"),
+    url(r'^acrecord/(?P<pk>\d+)$$', views.AcRecordView.as_view(), name="ac_record"),
     url(r'list/(?P<pk>\d+)', views.WordsView.as_view(), name="words_list"),
     # (r'^(?P<pk>\d+)/edit$', views.EditDemandView.as_view()),
     # (r'^delete$', views.DeleteDemandView.as_view()),

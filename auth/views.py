@@ -25,7 +25,7 @@ from .utils import encrypt_password, validate_password
 
 from auth.forms import AccountForm
 from monitor.views import BaseView
-
+from monitor.signals import after_action
 
 class LoginView(View):
     template_name = 'login.html'
@@ -59,8 +59,12 @@ def logoff(request):
     return HttpResponseRedirect(reverse('login'))
 
 def delete_account(request, pk):
+    owner = request
     user = get_object_or_404(User, id=pk)
     user.delete()
+    after_action.send(sender=owner.__class__, 
+                user=owner, instance=user, 
+                action=u"删除")
     return HttpResponseRedirect(reverse("admin"))
 
 
@@ -119,7 +123,10 @@ class AccountAdminView(BaseView):
         del cleaned_data['password2']
         team = Team.objects.get(id=self.user.account.team.id)
         new_user = User.objects.create_user(**cleaned_data)
-        Account.objects.get_or_create(user=new_user, team=self.user.account.team) 
+        account, created = Account.objects.get_or_create(user=new_user, team=self.user.account.team) 
+        after_action.send(sender=account.__class__, 
+                user=self.user, instance=account, 
+                action=u"添加")
         return HttpResponseRedirect(reverse('admin'))
 
 

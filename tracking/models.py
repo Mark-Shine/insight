@@ -1,3 +1,4 @@
+#encoding=utf-8
 import logging
 import traceback
 from datetime import datetime
@@ -84,6 +85,9 @@ class Pageview(models.Model):
 class WhiteList(models.Model):
     ip_address = models.CharField(max_length=39, editable=False)
     team = models.ForeignKey(Team, blank=True, null=True)
+
+    def __unicode__(self,):
+        return u"IP: %s-%s" %(self.id, self.ip_address)
     
 
 
