@@ -3,10 +3,20 @@
  */
 
 /* Move down content because we have a fixed navbar that is 50px tall */
+body h1{
+  color:  white;
+  padding-bottom: 10px;
+  padding-left: 300px;
+}
+
 body {
   padding-top: 50px;
 }
 
+.page-header img{
+  float: left;
+
+}
 
 /*
  * Global add-ons
