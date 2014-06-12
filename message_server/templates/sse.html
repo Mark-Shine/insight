@@ -6,7 +6,7 @@
         <script type="text/javascript">
             $(document).ready(
                     function() {
-                        sse = new EventSource('/my_event_source');
+                        sse = new EventSource('/alert');
                         sse.onmessage = function(message) {
                             console.log('A message has arrived!');
                             $('#output').append('<li>'+message.data+'</li>');
