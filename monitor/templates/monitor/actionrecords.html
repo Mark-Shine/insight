@@ -17,7 +17,7 @@
           <td><a href="{%url 'ac_record' pk=w.user.id%}">{{w.user.username}}</a></td>
           <td>{{w.action}}</td>
           <td>{{w.message}}</td>
-          <td>{{w.time}}</td>
+          <td>{{w.time|date:"Y-m-d H:i"}}</td>
         </tr>
 
         {% empty %}

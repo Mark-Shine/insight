@@ -39,6 +39,7 @@ from .models import Sites, Contact
 from monitor.signals import after_action
 from monitor.models import ActionRecord
 
+
 class ViewObject(View):
     """
     support utility for collect js,css ref,
@@ -146,10 +147,10 @@ class BaseView(ViewObject):
         user = request.user
         words = []
         if user.is_superuser:
-            words =  Words.objects.filter(enabled=True,)
+            words =  Words.objects.filter(enabled=True,).order_by("-time")
         else:
             team = user.account.team
-            words = Words.objects.filter(team__id=team.id)
+            words = Words.objects.filter(team__id=team.id).order_by("-time")
         return words
 
     def get_pagination(self, objects):
@@ -211,11 +212,12 @@ def add_word(request,):
     user = request.user
     if request.method == 'POST':
         word = request.POST.get('word')
+        time = datetime.datetime.now()
         if user.is_superuser:
             return HttpResponse(u"请切换到普通用户")
         team = user.account.team
         try:
-            word, created = Words.objects.get_or_create(**{"word": word,})
+            word, created = Words.objects.get_or_create(**{"word": word, "time": time})
             after_action.send(sender=word.__class__, 
                 user=user, instance=word, 
                 action=u"添加")
