@@ -534,6 +534,53 @@ class SearchWord(BaseView):
         return page_html
 
 
+class SearchRecord(BaseView):
+    template_name = 'records.html'
+    def parse_date(self, _date):
+        if _date:
+            date_list = map(lambda x:int(x), _date.split('-'))
+            result = datetime.datetime(date_list[0], date_list[1], date_list[2],)
+            return result
+        return 
+
+    def get(self, request):
+        self.request = request
+        self.pagenum = request.GET.get('page')
+        context = {}
+        context['records_active'] = 'active'
+        page = self.make(request, context)
+        return HttpResponse(page)
+        
+
+    def mod_content(self, ):
+        key = self.request.GET.get("key")
+        begin = self.request.GET.get("begin_time")
+        end = self.request.GET.get("end_time")
+        state = self.request.GET.get("state")
+        format_begin = self.parse_date(begin)
+        format_end = self.parse_date(end)
+        context = {}
+        qs_end = qs_begin = None
+        words = Words.objects.filter(word__contains=key).values_list("id", flat=True)
+        q = AlarmRecord.objects.filter(word__in=words)
+        if state is not None:
+            q = q.filter(state=int(state))
+        if format_begin and format_end:
+            q = q.filter(Q(time__gte=format_begin) & Q(time__lte=format_end))
+        elif format_end:
+            q = q.filter(Q(time__lte=format_end))
+        elif format_begin:
+            q = q.filter(Q(time__gte=format_begin))
+        q = q.order_by("-time")
+        for r in q:
+            r.word_name = Words.objects.filter(id=r.word)[0].word
+        paged_objects, pagination = self.get_pagination(q)
+        context['records'] = paged_objects
+        context['pagination'] = pagination
+        page_html = self.include(self.template_name, context)
+        return page_html
+
+
 class AcRecordView(BaseView):
     template_name = "monitor/actionrecords.html"
 
