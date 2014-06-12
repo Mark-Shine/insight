@@ -44,7 +44,6 @@
       
       <div class="row">
       <form class="form-signin" role="form" method="POST" action="{%url 'login'%}">
-        <h2 class="form-signin-heading">请登录</h2>
           {% csrf_token %}
           <input name="username" type="username" class="form-control" placeholder="UserName" required autofocus>
           <input name="password" type="password" class="form-control" placeholder="Password" required>
