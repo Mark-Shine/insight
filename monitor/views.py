@@ -455,9 +455,10 @@ class SitesView(BaseView):
 
 def delete_site(request, pk):
     """删除监控的站点"""
+    user = request.user
     sites = get_object_or_404(Sites, id=pk)
     sites.delete()
-    after_action.send(sender=word.__class__, 
+    after_action.send(sender=sites.__class__, 
                 user=user, instance=sites, 
                 action=u"删除")
     return HttpResponseRedirect(reverse("sites"))
@@ -598,7 +599,7 @@ class AcRecordView(BaseView):
         return HttpResponse(page)
 
     def detail(self,):
-        ac = ActionRecord.objects.filter(user_id=self.pk).select_related()
+        ac = ActionRecord.objects.select_related().filter(user_id=self.pk).order_by("-time")
         return ac
 
     def tolist(self, ):
@@ -606,7 +607,7 @@ class AcRecordView(BaseView):
         team = self.user.account.team
         accounts = Account.objects.filter(team=team)
         users = [ account.user for account in accounts ]
-        ac = ActionRecord.objects.filter(user__in=users).select_related()
+        ac = ActionRecord.objects.select_related().filter(user__in=users).order_by("-time")
         return ac
 
     def mod_content(self, ):
