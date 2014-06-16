@@ -144,12 +144,11 @@ def filter_task(post_data):
     #批量创建记录
     AlarmRecord.objects.bulk_create(result)
     if a_message:
+        alarm_message.send(sender=AlarmRecord.__class__, **{"a_message": [a['user_name'] for a in a_message]})
         try:
             new_alarm(a_message)
         except Exception, e:
             raise e 
-        finally:
-            alarm_message.send(sender=AlarmRecord.__class__, **{"a_message": [a['user_name'] for a in a_message]})
 
     return result
 
