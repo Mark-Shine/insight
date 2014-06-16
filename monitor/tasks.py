@@ -147,7 +147,7 @@ def filter_task(post_data):
         except Exception, e:
             raise e 
         finally:
-            alarm_message.send(sender="AlarmRecord", )
+            alarm_message.send(sender=AlarmRecord.__class__, )
     #批量创建记录
     AlarmRecord.objects.bulk_create(result)
 
