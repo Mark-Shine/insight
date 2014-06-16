@@ -9,9 +9,11 @@
     {{css_set}}
     <script src="{{STATIC_URL}}jquery/jquery.js"></script>
     <script src="{{STATIC_URL}}bootstrap/dist/js/bootstrap.js"></script>
+    <script src="{{STATIC_URL}}tornado_sse/jquery.eventsource.js"></script>
+    <script src="{{STATIC_URL}}tornado_sse/sse.js"></script>
 </head>
 
-<body>
+<body sse-data="http://127.0.0.1:8888/">
     <!-- 固定头 -->
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
           <div class="container-fluid">
@@ -60,5 +62,18 @@
     {{js_set}}
     {{foot_mod}}
     </body>
+        <script type="text/javascript">
+                // for redis 127.0.0.1:6379> PUBLISH all '["message", "{\"type\": \"message\", \"your-structure\": \"Blowjob is better than no job 1\", \"user\": \"tug\"}"]'
+                $('body').on('sse.message', function(el, msg){
+                    console.log(msg);
+                    alert("warning");
+                });
+
+                // for redis 127.0.0.1:6379> PUBLISH all '["message", "{\"type\": \"foo\", \"other-structure\": \"Blowjob is better than no job 1\", \"user\": \"bar\"}"]'
+                $('body').on('sse.foo', function(el, msg){
+                    console.log(msg);
+        });
+
+        </script>
 
 </html>

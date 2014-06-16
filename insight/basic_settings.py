@@ -127,6 +127,9 @@ INSTALLED_APPS = (
     "auth",
     "tracking",
     "south",
+    'redis',
+    'django_sse',
+    'tornado_sse',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:

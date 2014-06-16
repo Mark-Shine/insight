@@ -8,11 +8,20 @@ import urlparse
 from celery import shared_task
 import chardet
 
+from celery.utils.log import get_task_logger
+from django.utils import simplejson as json
+from django.dispatch.dispatcher import receiver
+from django.dispatch import Signal
+
 from monitor.models import *
 from monitor.messages import *
 from monitor.utils import *
 from monitor.forms import PostRecordForm
-from celery.utils.log import get_task_logger
+
+
+from django_sse.redisqueue import send_event
+
+alarm_message = Signal(providing_args=["args", "kwargs"], use_caching=True)
 
 logger = get_task_logger(__name__)
 
@@ -112,7 +121,6 @@ def transfer_dict(d_dict):
             d_dict[k] = d_dict.pop(v)
     return d_dict
 
-
 @shared_task
 def filter_task(post_data):
     #记录集合
@@ -136,8 +144,33 @@ def filter_task(post_data):
     if a_message:
         try:
             new_alarm(a_message)
+            alarm_message.send(sender="AlarmRecord", )
         except Exception, e:
             raise e 
     #批量创建记录
     AlarmRecord.objects.bulk_create(result)
+
     return result
+
+@receiver(alarm_message, )
+def alarm_notify(sender=None, **kwargs):
+    message = json.dumps({
+        'type': 'foo',
+        'html': "get",
+    })
+
+    send_event('message', message, 'sse') # named channel
+
+    return True
+
+def test_nofity():
+    print "start"
+    alarm_message.send(sender=AlarmRecord.__class__)
+
+    # message = json.dumps({
+    #     'type': 'foo',
+    #     'html': "get",
+    # })
+
+    # send_event('message', message, 'sse') # named channel
+    print "end"
