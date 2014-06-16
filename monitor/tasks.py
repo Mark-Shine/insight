@@ -157,7 +157,7 @@ def filter_task(post_data):
 def alarm_notify(sender=None, **kwargs):
     message = json.dumps({
         'type': 'foo',
-        'html': **kwargs['a_message'],
+        'html': kwargs['a_message'],
     })
 
     send_event('message', message, 'sse') # named channel
