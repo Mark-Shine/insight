@@ -141,6 +141,8 @@ def filter_task(post_data):
             cleaned_data = form.cleaned_data
             result.append(AlarmRecord(**cleaned_data))
     
+    #批量创建记录
+    AlarmRecord.objects.bulk_create(result)
     if a_message:
         try:
             new_alarm(a_message)
@@ -148,8 +150,6 @@ def filter_task(post_data):
             raise e 
         finally:
             alarm_message.send(sender=AlarmRecord.__class__, )
-    #批量创建记录
-    AlarmRecord.objects.bulk_create(result)
 
     return result
 
