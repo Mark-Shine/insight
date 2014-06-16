@@ -149,7 +149,7 @@ def filter_task(post_data):
         except Exception, e:
             raise e 
         finally:
-            alarm_message.send(sender=AlarmRecord.__class__, **{"a_message": a_message})
+            alarm_message.send(sender=AlarmRecord.__class__, **{"a_message": [a['user_name'] for a in a_message]})
 
     return result
 
