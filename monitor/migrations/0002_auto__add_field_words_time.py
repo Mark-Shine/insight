@@ -8,35 +8,15 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'ActionRecord'
-        db.create_table(u'monitor_actionrecord', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('action', self.gf('django.db.models.fields.CharField')(max_length=24, null=True, blank=True)),
-            ('time', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], null=True, blank=True)),
-        ))
-        db.send_create_signal(u'monitor', ['ActionRecord'])
-
-        # Adding field 'AlarmRecord.position'
-        db.add_column(u'monitor_alarmrecord', 'position',
-                      self.gf('django.db.models.fields.CharField')(default='', max_length=8, null=True, blank=True),
-                      keep_default=False)
-
-        # Adding field 'AlarmRecord.state'
-        db.add_column(u'monitor_alarmrecord', 'state',
-                      self.gf('django.db.models.fields.IntegerField')(default=0, blank=True),
+        # Adding field 'Words.time'
+        db.add_column(u'monitor_words', 'time',
+                      self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True),
                       keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting model 'ActionRecord'
-        db.delete_table(u'monitor_actionrecord')
-
-        # Deleting field 'AlarmRecord.position'
-        db.delete_column(u'monitor_alarmrecord', 'position')
-
-        # Deleting field 'AlarmRecord.state'
-        db.delete_column(u'monitor_alarmrecord', 'state')
+        # Deleting field 'Words.time'
+        db.delete_column(u'monitor_words', 'time')
 
 
     models = {
@@ -80,6 +60,7 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'ActionRecord'},
             'action': ('django.db.models.fields.CharField', [], {'max_length': '24', 'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'message': ('django.db.models.fields.CharField', [], {'max_length': '64', 'null': 'True', 'blank': 'True'}),
             'time': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']", 'null': 'True', 'blank': 'True'})
         },
@@ -126,6 +107,7 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'nums': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
             'team': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': u"orm['monitor.Team']", 'null': 'True', 'blank': 'True'}),
+            'time': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'word': ('django.db.models.fields.CharField', [], {'max_length': '32'})
         }
     }

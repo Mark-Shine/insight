@@ -18,6 +18,7 @@
           <th>#</th>
           <th>关键词</th>
           <th>数量</th>
+          <th>时间</th>
           <th>操作</th>
         </tr>
       </thead>
@@ -26,7 +27,8 @@
         <tr>
           <td>{{forloop.counter}}</td>
           <td>{{w.word}}</td>
-          <td> {{w.count | default:" 0"}}</td>
+          <td>{{w.count | default:" 0"}}</td>
+          <td>{{w.time | default:" "|date:"Y-m-d H:i"}}</td>
           <td><a href="{%url 'word2recod' pk=w.id %}">查看</a> <a href="{%url 'delete_word' pk=w.id %}">删除</a></td>
         </tr>
         {% empty %}

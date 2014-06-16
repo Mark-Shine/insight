@@ -59,7 +59,7 @@ def logoff(request):
     return HttpResponseRedirect(reverse('login'))
 
 def delete_account(request, pk):
-    owner = request
+    owner = request.user
     user = get_object_or_404(User, id=pk)
     user.delete()
     after_action.send(sender=owner.__class__, 

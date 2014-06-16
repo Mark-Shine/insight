@@ -20,6 +20,7 @@ class Words(models.Model):
     nums = models.IntegerField(blank=True, null=True)
     enabled = models.BooleanField(blank=True, default=True)
     team = models.ManyToManyField("Team", blank=True, null=True,)
+    time = models.DateTimeField(blank=True, null=True)
     
     def __unicode__(self,):
         return u"关键词：%s-%s" %(self.id, self.word)

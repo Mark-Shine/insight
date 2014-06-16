@@ -39,6 +39,7 @@ from .models import Sites, Contact
 from monitor.signals import after_action
 from monitor.models import ActionRecord
 
+
 class ViewObject(View):
     """
     support utility for collect js,css ref,
@@ -146,10 +147,10 @@ class BaseView(ViewObject):
         user = request.user
         words = []
         if user.is_superuser:
-            words =  Words.objects.filter(enabled=True,)
+            words =  Words.objects.filter(enabled=True,).order_by("-time")
         else:
             team = user.account.team
-            words = Words.objects.filter(team__id=team.id)
+            words = Words.objects.filter(team__id=team.id).order_by("-time")
         return words
 
     def get_pagination(self, objects):
@@ -211,11 +212,12 @@ def add_word(request,):
     user = request.user
     if request.method == 'POST':
         word = request.POST.get('word')
+        time = datetime.datetime.now()
         if user.is_superuser:
             return HttpResponse(u"请切换到普通用户")
         team = user.account.team
         try:
-            word, created = Words.objects.get_or_create(**{"word": word,})
+            word, created = Words.objects.get_or_create(**{"word": word, "time": time})
             after_action.send(sender=word.__class__, 
                 user=user, instance=word, 
                 action=u"添加")
@@ -453,9 +455,10 @@ class SitesView(BaseView):
 
 def delete_site(request, pk):
     """删除监控的站点"""
+    user = request.user
     sites = get_object_or_404(Sites, id=pk)
     sites.delete()
-    after_action.send(sender=word.__class__, 
+    after_action.send(sender=sites.__class__, 
                 user=user, instance=sites, 
                 action=u"删除")
     return HttpResponseRedirect(reverse("sites"))
@@ -596,7 +599,7 @@ class AcRecordView(BaseView):
         return HttpResponse(page)
 
     def detail(self,):
-        ac = ActionRecord.objects.filter(user_id=self.pk).select_related()
+        ac = ActionRecord.objects.select_related().filter(user_id=self.pk).order_by("-time")
         return ac
 
     def tolist(self, ):
@@ -604,7 +607,7 @@ class AcRecordView(BaseView):
         team = self.user.account.team
         accounts = Account.objects.filter(team=team)
         users = [ account.user for account in accounts ]
-        ac = ActionRecord.objects.filter(user__in=users).select_related()
+        ac = ActionRecord.objects.select_related().filter(user__in=users).order_by("-time")
         return ac
 
     def mod_content(self, ):

@@ -34,11 +34,16 @@
   </head>
 
   <body>
-
+    <div class="page-header signin-header" >
+          
+           <h1><img class="img-responsive" src="{{STATIC_PREFIX}}img/gaj.gif" style="width: 50px ">
+            温州市公安局经济技术开发区分局<small>网络关键词监控系统</small>
+            </h1>
+    </div>
     <div class="container">
-
+      
+      <div class="row">
       <form class="form-signin" role="form" method="POST" action="{%url 'login'%}">
-        <h2 class="form-signin-heading">请登录</h2>
           {% csrf_token %}
           <input name="username" type="username" class="form-control" placeholder="UserName" required autofocus>
           <input name="password" type="password" class="form-control" placeholder="Password" required>
@@ -48,11 +53,10 @@
         </label>
         <button class="btn btn-lg btn-primary btn-block" type="submit">登录</button>
       </form>
+    </div>
 
     </div> <!-- /container -->
-
-
-    <!-- Bootstrap core JavaScript
+   <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
   </body>
