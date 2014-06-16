@@ -144,9 +144,10 @@ def filter_task(post_data):
     if a_message:
         try:
             new_alarm(a_message)
-            alarm_message.send(sender="AlarmRecord", )
         except Exception, e:
             raise e 
+        finally:
+            alarm_message.send(sender="AlarmRecord", )
     #批量创建记录
     AlarmRecord.objects.bulk_create(result)
 
@@ -166,11 +167,4 @@ def alarm_notify(sender=None, **kwargs):
 def test_nofity():
     print "start"
     alarm_message.send(sender=AlarmRecord.__class__)
-
-    # message = json.dumps({
-    #     'type': 'foo',
-    #     'html': "get",
-    # })
-
-    # send_event('message', message, 'sse') # named channel
     print "end"
