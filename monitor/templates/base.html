@@ -11,9 +11,12 @@
     <script src="{{STATIC_URL}}bootstrap/dist/js/bootstrap.js"></script>
     <script src="{{STATIC_URL}}tornado_sse/jquery.eventsource.js"></script>
     <script src="{{STATIC_URL}}tornado_sse/sse.js"></script>
+    <audio id="chatAudio">
+    <source src="{{STATIC_URL}}audio/notify.wav" type="audio/wav"> 
+    </audio>
 </head>
 
-<body sse-data="http://127.0.0.1:8888/">
+<body sse-data="/sse/">
     <!-- 固定头 -->
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
           <div class="container-fluid">

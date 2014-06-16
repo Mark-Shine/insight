@@ -10,7 +10,8 @@ celery -A insight  worker -l info
 #启动django
 sh startup.sh
 
-
+#启动redis
+nohup redis-server &
 
 #服务器端
 #后端启动服务

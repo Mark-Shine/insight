@@ -30,6 +30,7 @@ $(function(){
 
                 console.log(event);
                 alert("有警告，请查看");
+                $('#chatAudio')[0].play();
                 $('body').trigger(event, msg);
             },
             error: function(msg) {
