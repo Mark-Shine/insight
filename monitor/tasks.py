@@ -145,21 +145,21 @@ def filter_task(post_data):
     AlarmRecord.objects.bulk_create(result)
     if a_message:
         try:
-            alarm_message.send(sender=AlarmRecord.__class__, **{"a_message": [a['user_name'] for a in a_message]})
+            alarm_message.send(sender=AlarmRecord.__class__, )
         except Exception, e:
             raise e
         try:
             new_alarm(a_message)
         except Exception, e:
             raise e 
-
+    
     return result
 
 @receiver(alarm_message, )
 def alarm_notify(sender=None, **kwargs):
     message = json.dumps({
         'type': 'foo',
-        'html': kwargs['a_message'],
+        'html': "news",
     })
 
     send_event('message', message, 'sse') # named channel

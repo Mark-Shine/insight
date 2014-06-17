@@ -29,8 +29,8 @@ $(function(){
                 else event += '.message';
 
                 console.log(event);
-                alert("有警告，请查看");
                 $('#chatAudio')[0].play();
+                $("#J_Warning_Message").removeClass("hidden")
                 $('body').trigger(event, msg);
             },
             error: function(msg) {
