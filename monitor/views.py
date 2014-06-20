@@ -234,6 +234,8 @@ def edit_word(request, pk):
 
 def delete_word(request, pk):
     user = request.user
+    if not user.account.is_admin:
+        return HttpResponseRedirect(reverse("words"))
     word = get_object_or_404(Words, id=pk)
     team = user.account.team
     #todo 不能直接覆盖为False,会影响其他队伍的
@@ -400,6 +402,8 @@ class IpControlView(BaseView):
 def add_ip(request, ):
     if request.method == 'POST':
         user = request.user
+        if not user.account.is_admin:
+            return HttpResponseRedirect(reverse("whitelist"))
         ip_str = request.POST.get('ip_str')
         white = WhiteList.objects.create(**{"ip_address": ip_str})
         after_action.send(sender=white.__class__, 
@@ -410,6 +414,8 @@ def add_ip(request, ):
 
 def delete_ip(request, pk):
     user = request.user
+    if not user.account.is_admin:
+        return HttpResponseRedirect(reverse("whitelist"))
     white = get_object_or_404(WhiteList, id=pk)
     white.delete()
     after_action.send(sender=white.__class__, 
@@ -444,6 +450,8 @@ class SitesView(BaseView):
 
         if request.method == 'POST':
             user = request.user
+            if not user.account.is_admin:
+                return HttpResponseRedirect(reverse("sites"))
             team = request.user.account.team
             ip = request.POST.get('ip')
             name = request.POST.get('name')
@@ -458,6 +466,8 @@ class SitesView(BaseView):
 def delete_site(request, pk):
     """删除监控的站点"""
     user = request.user
+    if not user.account.is_admin:
+        return HttpResponseRedirect(reverse("sites"))
     sites = get_object_or_404(Sites, id=pk)
     sites.delete()
     after_action.send(sender=sites.__class__, 
@@ -488,6 +498,8 @@ class ContactView(BaseView):
     def post(self, request):
         if request.method == 'POST':
             user = request.user
+            if not user.account.is_admin:
+                return HttpResponseRedirect(reverse("contacts"))
             phone = request.POST.get('phone')
             name = request.POST.get('name')
             email = request.POST.get('email')
@@ -506,6 +518,8 @@ class ContactView(BaseView):
 def delete_contact(request, pk):
     """删除联系人"""
     user = request.user
+    if not user.account.is_admin:
+        return HttpResponseRedirect(reverse("contacts"))
     contacts = get_object_or_404(Contact, id=pk)
     contacts.delete()
     after_action.send(sender=word.__class__, 

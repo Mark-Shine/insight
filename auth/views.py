@@ -60,6 +60,8 @@ def logoff(request):
 
 def delete_account(request, pk):
     owner = request.user
+    if not owner.account.is_admin:
+        return HttpResponseRedirect(reverse("admin"))
     user = get_object_or_404(User, id=pk)
     user.delete()
     after_action.send(sender=owner.__class__, 

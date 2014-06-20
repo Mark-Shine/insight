@@ -9,16 +9,9 @@ from django.db.models.signals import post_save
 
 class Account(models.Model):
     """关键字"""
-    # captain = models.ForeignKey(Captain, blank=True, null=True)
     user = models.OneToOneField(User)
     team = models.ForeignKey(Team, blank=True, null=True)
-    # username = models.CharField(max_length=64, blank=True, null=True)
-    # password = models.CharField(max_length=64, blank=True, null=True)
-    # email = models.EmailField(blank=True,)
-    # create_time = models.DateTimeField(null=True, blank=True,
-        # auto_now=True,)
-    # name = username
-    # create_time = date_joined
+    is_admin = models.BooleanField('admin status', default=False,)
 
     def __unicode__(self,):
         return u"用户：%s-%s" %(self.user.id, self.user.username)
