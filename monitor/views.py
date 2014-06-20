@@ -236,6 +236,7 @@ def delete_word(request, pk):
     user = request.user
     word = get_object_or_404(Words, id=pk)
     team = user.account.team
+    word.enabled = False
     word.team.remove(team)
     word.save()
     after_action.send(sender=word.__class__, 
