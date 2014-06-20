@@ -1,9 +1,10 @@
 <h2 class="sub-header">用户</h2>
 <div>
+{%if is_admin %}
   <button class="btn btn-primary" data-toggle="modal" data-target="#addUser">
     新增用户
   </button>
-
+{%endif%}
   
 </div>
   <div class="table-responsive">
@@ -22,7 +23,7 @@
           <td>&nbsp;</td>
           <td>{{a.user.username}}</td>
           <td>{{a.user.email}}</td>
-          <td><a href="{%url 'delete_account' pk=a.user.id %}">删除</a></td>
+          <td><a href="{%url 'delete_account' pk=a.user.id %}">{%if is_admin %}删除{%endif%}</a></td>
         </tr>
         {% empty %}
         {% endfor %}

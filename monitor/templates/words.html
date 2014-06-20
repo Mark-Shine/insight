@@ -1,8 +1,10 @@
 <h2 class="sub-header">关键词</h2>
 <div>
+  {%if is_admin %}
   <button class="btn btn-primary btn-lg pull-right" data-toggle="modal" data-target="#addWord">
     新增关键词
   </button>
+  {%endif%}
   <form class="navbar-form navbar-left" role="search" action="{%url "search_word" %}">
         <div class="form-group">
           <input type="text" class="form-control" placeholder="Search" name="key">

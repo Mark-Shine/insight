@@ -1,9 +1,10 @@
 <h2 class="sub-header">报警联系人</h2>
+{%if is_admin%}
 <div>
   <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#addContact">
     新增联系人
   </button>
-
+{%endif%}
   
 </div>
   <div class="table-responsive">
@@ -24,7 +25,7 @@
           <td>{{w.name}}</td>
           <td> {{w.phone}}</td>
           <td> {{w.email}}</td>
-          <td><a href="{%url 'delete_contact' pk=w.id %}">删除</a></td>
+          <td><a href="{%url 'delete_contact' pk=w.id %}">{%if is_admin %}删除{% endif %}</a></td>
         </tr>
         {% empty %}
         {% endfor %}

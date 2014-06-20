@@ -10,10 +10,12 @@ def common(request):
         team = user.account.team.name
     else:
         team = ''
+    is_admin = user.account.is_admin
     context = dict(
         USER_NAME=user.username,
         TEAM=team,
-        app=""
+        app="",
+        is_admin=is_admin,
         )
     return context
 

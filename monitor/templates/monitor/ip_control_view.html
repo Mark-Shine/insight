@@ -1,10 +1,11 @@
 <h2 class="sub-header">白名单 IP </h2>
 <div>
+  {%if is_admin %}
   <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#addIp">
     新增IP
   </button>
 
-  
+    {%endif%}
 </div>
   <div class="table-responsive">
     <table class="table table-striped">
@@ -20,7 +21,7 @@
         <tr>
           <td>{{forloop.counter}}</td>
           <td>{{w.ip_address}}</td>
-          <td><a href="{%url 'delete_ip' pk=w.id %}">删除</a></td>
+          <td><a href="{%url 'delete_ip' pk=w.id %}">{%if is_admin %}删除{%endif%}</a></td>
         </tr>
         {% empty %}
         {% endfor %}

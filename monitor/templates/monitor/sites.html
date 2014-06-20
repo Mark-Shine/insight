@@ -1,9 +1,11 @@
 <h2 class="sub-header">站点</h2>
 <div>
+
+  {% if is_admin%}
   <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#addSite">
     新增站点
   </button>
-
+  {% endif %}
   
 </div>
   <div class="table-responsive">
@@ -22,7 +24,7 @@
           <td>{{forloop.counter}}</td>
           <td>{{w.name}}</td>
           <td> {{w.ip}}</td>
-          <td><a href="{%url 'delete_site' pk=w.id %}">删除</a></td>
+          <td><a href="{%url 'delete_site' pk=w.id %}">{%if is_admin %}删除{%endif%}</a></td>
         </tr>
         {% empty %}
         {% endfor %}
