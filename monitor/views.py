@@ -317,7 +317,7 @@ class Word2Record(BaseView):
     template_name = "word2records.html"
 
     def mod_content(self, ):
-        records = AlarmRecord.select_related().objects.filter(word=int(self.pk)).order_by("-time",)
+        records = AlarmRecord.objects.select_related().filter(word=int(self.pk)).order_by("-time",)
         paged_objects, pagination = self.get_pagination(records)
         word = Words.objects.filter(id=self.pk)[0].word
         page_html = self.include(
