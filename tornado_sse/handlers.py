@@ -162,7 +162,6 @@ class SSEHandler(tornado.web.RequestHandler):
         sse = Sse()
         sse.set_event_id(id)
         sse.add_message(event, data)
-
         message =  ''.join(sse)
         cls._cache.append({
             'id': id,

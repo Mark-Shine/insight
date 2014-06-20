@@ -81,16 +81,11 @@ def alarm(a_message=[]):
     do_sendmail(msg=msg, mail_list=contacts, )
 
 
-def new_alarm(a_message):
+def new_alarm(a_message, inform_teams):
     words = []
     users = Contact.objects.all()
-    teams = []
+    teams = inform_teams
     msg = dict(users=users, )
-    for a in a_message:
-        words.append(Words.objects.get(id=a['word']))
-        a['word'] = Words.objects.get(id=a['word']).word
-    #add related teams to contact list
-    [teams.extend(list(word.team.all())) for word in words ]
     #only notify team whose word is alarmed
     contacts = Contact.objects.filter(team__in=teams).values_list("email", flat=True)
     msg = {"a_message": a_message}
@@ -144,29 +139,44 @@ def filter_task(post_data):
     #批量创建记录
     AlarmRecord.objects.bulk_create(result)
     if a_message:
+        inform_teams = gen_2_list(a_message)
         try:
-            alarm_message.send(sender=AlarmRecord.__class__, )
+            alarm_message.send(sender=AlarmRecord.__class__, inform_teams=inform_teams)
         except Exception, e:
             raise e
         try:
-            new_alarm(a_message)
+            new_alarm(a_message, inform_teams)
         except Exception, e:
             raise e 
     
     return result
 
+def gen_2_list(a_message):
+    """生成通知的team"""
+    words = []
+    teams = []
+    for a in a_message:
+        words.append(Words.objects.get(id=a['word']))
+        a['word'] = Words.objects.get(id=a['word']).word
+    #add related teams to contact list
+    [teams.extend(list(word.team.all())) for word in words ]
+    return set(teams)
+
 @receiver(alarm_message, )
 def alarm_notify(sender=None, **kwargs):
+
+    inform_teams = kwargs["inform_teams"]
+    channels = [team.name for team in inform_teams]
     message = json.dumps({
         'type': 'foo',
         'html': "news",
     })
-
-    send_event('message', message, 'sse') # named channel
+    for channel in channels:
+        send_event('message', message, channel) # named channel
 
     return True
 
 def test_nofity():
     print "start"
-    alarm_message.send(sender=AlarmRecord.__class__)
+    alarm_message.send(sender=AlarmRecord.__class__,)
     print "end"

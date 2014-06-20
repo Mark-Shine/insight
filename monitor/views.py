@@ -217,7 +217,7 @@ def add_word(request,):
             return HttpResponse(u"请切换到普通用户")
         team = user.account.team
         try:
-            word, created = Words.objects.get_or_create(**{"word": word, "time": time})
+            word, created = Words.objects.get_or_create(word=word, defaults={"time": time})
             after_action.send(sender=word.__class__, 
                 user=user, instance=word, 
                 action=u"添加")
