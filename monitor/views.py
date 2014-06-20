@@ -147,10 +147,10 @@ class BaseView(ViewObject):
         user = request.user
         words = []
         if user.is_superuser:
-            words =  Words.objects.filter(enabled=True,).order_by("-time")
+            words =  Words.objects.select_related().filter(enabled=True,).order_by("-time")
         else:
             team = user.account.team
-            words = Words.objects.filter(team__id=team.id).order_by("-time")
+            words = Words.objects.select_related().filter(team__id=team.id).order_by("-time")
         return words
 
     def get_pagination(self, objects):
@@ -236,6 +236,7 @@ def delete_word(request, pk):
     user = request.user
     word = get_object_or_404(Words, id=pk)
     team = user.account.team
+    #todo 不能直接覆盖为False,会影响其他队伍的
     word.enabled = False
     word.team.remove(team)
     word.save()
@@ -277,7 +278,7 @@ class RecordViews(BaseView):
 
     def mod_content(self, ):
         team_words = self.get_words(self.request).values_list("id", flat=True)
-        records = AlarmRecord.objects.filter(word__in=team_words).order_by("-time",)
+        records = AlarmRecord.objects.select_related().filter(word__in=team_words).order_by("-time",)
         for r in records:
             r.word_name = Words.objects.filter(id=r.word)[0].word
         paged_objects, pagination = self.get_pagination(records)
@@ -314,7 +315,7 @@ class Word2Record(BaseView):
     template_name = "word2records.html"
 
     def mod_content(self, ):
-        records = AlarmRecord.objects.filter(word=int(self.pk)).order_by("-time",)
+        records = AlarmRecord.select_related().objects.filter(word=int(self.pk)).order_by("-time",)
         paged_objects, pagination = self.get_pagination(records)
         word = Words.objects.filter(id=self.pk)[0].word
         page_html = self.include(
