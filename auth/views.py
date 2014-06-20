@@ -117,6 +117,9 @@ class AccountAdminView(BaseView):
 
     def post(self, request):
         self.user = request.user
+        if self.user.account.is_admin:
+            return HttpResponseRedirect(reverse("admin"))
+            
         form = AccountForm(request.POST)
         if not form.is_valid():
             return HttpResponse(json.dumps(form._errors))
