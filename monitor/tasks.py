@@ -177,7 +177,7 @@ def alarm_notify(sender=None, **kwargs):
         'html': "news",
     })
     for channel in channels:
-        send_event('message', message, quote(channel)) # named channel
+        send_event('message', message, quote(channel.encode('utf-8'))) # named channel
 
     return True
 
