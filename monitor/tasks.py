@@ -136,7 +136,7 @@ def filter_task(post_data):
             
         _post = transfer_dict(post)
         form = PostRecordForm(_post)
-        site = Sites.objects.get(ip=_post['site_ip'])
+        site = Sites.objects.filter(ip=_post['site_ip'])[0]
         if form.is_valid():
             cleaned_data = form.cleaned_data
             cleaned_data['site'] = site
