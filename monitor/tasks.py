@@ -6,6 +6,7 @@ import json
 import time
 import urlparse
 from celery import shared_task
+from urllib2 import quote
 import chardet
 
 from celery.utils.log import get_task_logger
@@ -69,6 +70,9 @@ def search_and_match(data, chars=[]):
                 return (True, _id)
     return (False, "")
 
+
+def is_in(data, chars):
+    [lambda x: x in data for _id, c in chars]
 
 def alarm(a_message=[]):
     """警报"""
@@ -166,7 +170,6 @@ def gen_2_list(a_message):
 
 @receiver(alarm_message, )
 def alarm_notify(sender=None, **kwargs):
-
     inform_teams = kwargs["inform_teams"]
     channels = [team.name for team in inform_teams]
     message = json.dumps({
@@ -174,7 +177,7 @@ def alarm_notify(sender=None, **kwargs):
         'html': "news",
     })
     for channel in channels:
-        send_event('message', message, channel) # named channel
+        send_event('message', message, quote(channel)) # named channel
 
     return True
 

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 *-*
 from django.contrib.auth.models import User
+from urllib2 import quote
 
 
 def common(request):
@@ -14,6 +15,7 @@ def common(request):
     context = dict(
         USER_NAME=user.username,
         TEAM=team,
+        TEAM_CHANNEL = quote(team)
         app="",
         is_admin=is_admin,
         )
