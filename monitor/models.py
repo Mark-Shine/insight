@@ -85,7 +85,7 @@ class Sites(models.Model):
     name = models.CharField(max_length=64, blank=True, null=True)
     #是否启用
     enabled = models.BooleanField(blank=True, default=True)
-    team = models.ForeignKey(Team, blank=True, null=True)
+    team = models.ManyToManyField(Team, blank=True, null=True)
 
     def __unicode__(self,):
         return u"监控站点：%s-%s" %(self.id, self.ip)

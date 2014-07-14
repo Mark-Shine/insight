@@ -449,7 +449,7 @@ class SitesView(BaseView):
         return HttpResponse(page)
 
     def mod_content(self, ):
-        sites = Sites.objects.filter(team=self.request.user.account.team)
+        sites = Sites.objects.filter(team__id=self.request.user.account.team.id)
         page_html = self.include(
             self.template_name, {"sites": sites})
         return page_html
@@ -463,7 +463,9 @@ class SitesView(BaseView):
             team = request.user.account.team
             ip = request.POST.get('ip')
             name = request.POST.get('name')
-            sites = Sites.objects.create(**{"ip": ip, "name": name, "team": team})
+            sites = Sites.objects.create(**{"ip": ip, "name": name})
+            sites.team.add(team)
+            sites.save()
             after_action.send(sender=sites.__class__, 
                 user=user, instance=sites, 
                 action=u"添加")
