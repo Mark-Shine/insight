@@ -41,7 +41,10 @@ class AlarmRecord(models.Model):
     position = models.CharField(max_length=8, blank=True, null=True, default='')
     #状态
     state = models.IntegerField(blank=True, default=0, choices=((0, u"未处理"), (1, "已处理")))
-
+    #pid
+    pid = models.IntegerField(blank=True, default=0)
+    site = models.ForeignKey("Sites", blank=True, null=True)
+    
     def __unicode__(self,):
         return u"警告记录：%s-%s" %(self.id, self.title)
 

@@ -59,6 +59,11 @@ def trans_encoding(raw_data):
         new.append(urldecode_to(json_data)) 
     return new
 
+def append_site_ip(data, ip):
+    for vo in data:
+        vo.update(site_ip=ip)
+    return data
+
 @csrf_exempt
 def recieve_data(request):
     raw = request.POST
@@ -71,10 +76,10 @@ def recieve_data(request):
         #获取许可的站点
         sites = Sites.objects.all().values_list('ip', flat=True)
         request_ip = request.META['REMOTE_ADDR']
-        print sites
         if request_ip not in sites:
             print "ip %s  not allowed" % request_ip
             return HttpResponse('not allowed')
+        data = append_site_ip(data, request_ip)
         filter_task.delay(data)
     except Exception, e:
         print "error: %s" % e

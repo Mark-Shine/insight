@@ -16,6 +16,7 @@
           <th>站点名称</th>
           <th>IP</th>
           <th>操作</th>
+          <th>pid查询</th>
         </tr>
       </thead>
       <tbody>
@@ -25,6 +26,13 @@
           <td>{{w.name}}</td>
           <td> {{w.ip}}</td>
           <td><a href="{%url 'delete_site' pk=w.id %}">{%if is_admin %}删除{%endif%}</a></td>
+          <td>
+            <form action="{%url 'search'%}" method="POST" id="J_Form_Search">
+                <input class="text hidden" name="site_id" value="{{w.id}}">
+                <input type="text" name="pid">
+                <button class="btn btn-success btn-sm" id="J_Search" type="submit">search</button>
+            </form>
+          </td>
         </tr>
         {% empty %}
         {% endfor %}
@@ -32,7 +40,7 @@
     </table>
   </div>
 
-<!-- Modal -->
+<!-- ADD Modal -->
   <div class="modal fade" id="addSite" tabindex="-1" role="dialog" aria-labelledby="addSite" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -61,3 +69,33 @@
         </div>
       </div>
     </div>
+
+
+<div class="modal fade modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="J_Search_Model">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" id="J_Search_Model_Content">
+      ...
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  var frm = $("#J_Form_Search")
+  var btn = $("#J_Search")
+  frm.submit(function () {
+    event.preventDefault();
+    btn.button('loading')
+    $.ajax(
+      {
+          url: frm.attr('action'),
+          type: "post",
+          data: frm.serialize(),
+          success:function(data) {
+              $('#J_Search_Model_Content').html(data)
+              $('#J_Search_Model').modal('toggle')
+              btn.button('reset')
+          }
+        })
+  });});
+</script>

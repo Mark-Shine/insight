@@ -428,6 +428,14 @@ def sendmail(request):
     do_sendmail()
     return HttpResponse("hello")
 
+@csrf_exempt
+def search(request):
+    site_id = request.POST.get('site_id')
+    pid = request.POST.get('pid')
+    ars = AlarmRecord.objects.filter(site=site_id).filter(pid=pid) if pid else None
+    page = render_to_string("monitor/search_result.html", {"records": ars})
+    return HttpResponse(page)
+
 
 class SitesView(BaseView):
     """监控站点的添加及浏览"""
@@ -551,6 +559,7 @@ class SearchWord(BaseView):
             context['pagination'] = pagination
         page_html = self.include(self.template_name, context)
         return page_html
+
 
 
 class SearchRecord(BaseView):

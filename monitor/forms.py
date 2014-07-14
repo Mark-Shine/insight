@@ -12,7 +12,7 @@ ZH_ERROR_MSG = {
 }
 
 class PostRecordForm(forms.Form):
-    website = forms.CharField(label=u"用户名")
+    website = forms.CharField(label=u"站点")
     message = forms.CharField(label=u"内容")
     title = forms.CharField(label=u"标题")
     time = forms.DateTimeField(label=u"时间",)
@@ -21,4 +21,4 @@ class PostRecordForm(forms.Form):
     ip_and_port = forms.CharField(label=u"ip")
     word = forms.IntegerField(required=False)
     position = forms.CharField(max_length=8, label=u"楼层")
-    
+    pid = forms.IntegerField(required=False)

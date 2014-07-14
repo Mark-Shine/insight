@@ -10,6 +10,7 @@ from monitor.views import IpControlView
 from monitor.views import add_ip, delete_ip
 from monitor.views import sendmail
 from monitor.views import SitesView, delete_site, change_record_state
+from monitor.views import search
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
@@ -33,6 +34,7 @@ urlpatterns = patterns('',
     # url(r'^insight/', include('insight.foo.urls')),
     url(r'^auth', include('auth.urls')),
     url(r'^whitelist/add$', add_ip, name='add_ip'),
+    url(r'^search$', search, name='search'),
     url(r'^whitelist/delete/(?P<pk>\d+)$', delete_ip, name='delete_ip'),
     url(r'^whitelist$', IpControlView.as_view(), name='whitelist'),
     url(r'^send$', sendmail, name='sendmail'),

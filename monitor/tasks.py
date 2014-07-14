@@ -132,8 +132,10 @@ def filter_task(post_data):
             
         _post = transfer_dict(post)
         form = PostRecordForm(_post)
+        site = Sites.objects.get(ip=_post['site_ip'])
         if form.is_valid():
             cleaned_data = form.cleaned_data
+            cleaned_data['site'] = site
             result.append(AlarmRecord(**cleaned_data))
     
     #批量创建记录
