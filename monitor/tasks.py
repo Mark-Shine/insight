@@ -171,14 +171,13 @@ def gen_2_list(a_message):
 @receiver(alarm_message, )
 def alarm_notify(sender=None, **kwargs):
     inform_teams = kwargs["inform_teams"]
-    channels = [team.name for team in inform_teams]
+    channels = [team.id for team in inform_teams]
     message = json.dumps({
         'type': 'foo',
         'html': "news",
     })
     for channel in channels:
-        send_event('message', message, quote(channel.encode('utf-8'))) # named channel
-
+        send_event('message', message, channel) # named channel
     return True
 
 def test_nofity():
