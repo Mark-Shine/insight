@@ -15,7 +15,7 @@ def common(request):
     context = dict(
         USER_NAME=user.username,
         TEAM=team,
-        TEAM_CHANNEL=quote(team),
+        # TEAM_CHANNEL=quote(team),
         app="",
         is_admin=is_admin,
         )
