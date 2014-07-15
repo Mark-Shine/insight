@@ -89,7 +89,6 @@ $(document).ready(function() {
   $frm = $("#J_Search_form")
   $frm.submit(function () {
       event.preventDefault();
-      $btn.button('loading')
       $.ajax(
         {
             url: $frm.attr('action'),
