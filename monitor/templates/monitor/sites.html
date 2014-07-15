@@ -16,7 +16,7 @@
       <div class="form-group">
       <input type="text" name="pid" placeholder="请输入pid" class="form-control">
       </div>
-      <button class="btn btn-success J_Button_Search" id="{{w.id}}" type="submit">search</button>
+      <button class="btn btn-success J_Button_Search" id="J_Search_Button" type="submit">search</button>
   </form>
   {% endif %}
   
@@ -76,9 +76,9 @@
     </div>
 
 
-<div class="modal fade modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="J_Search_Model">
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="J_Search_Model">
   <div class="modal-dialog modal-lg">
-    <div class="modal-content" id="J_Search_Model_Content">
+    <div class="modal-content" id="J_Search_Model_Content" style="width:800px">
       ...
     </div>
   </div>
@@ -89,8 +89,7 @@ $(document).ready(function() {
   $frm = $("#J_Search_form")
   $frm.submit(function () {
       event.preventDefault();
-      // $btn.button('loading')
-      // alert($btn.attr("id"))
+      $btn.button('loading')
       $.ajax(
         {
             url: $frm.attr('action'),
@@ -99,7 +98,6 @@ $(document).ready(function() {
             success:function(data) {
                 $('#J_Search_Model_Content').html(data)
                 $('#J_Search_Model').modal('toggle')
-                // $btn.button('reset')
             }
           })
     });
