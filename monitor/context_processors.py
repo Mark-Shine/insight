@@ -9,13 +9,15 @@ def common(request):
         return {}
     if not user.is_superuser:
         team = user.account.team.name
+        team_id = user.account.team.id
     else:
         team = ''
+        team_id = ''
     is_admin = user.account.is_admin
     context = dict(
         USER_NAME=user.username,
         TEAM=team,
-        TEAM_CHANNEL=user.account.team.id,
+        TEAM_CHANNEL=team_id,
         app="",
         is_admin=is_admin,
         )
