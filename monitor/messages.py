@@ -1,4 +1,5 @@
 #encoding=utf-8
+import requests
 from django.core.mail import send_mass_mail
 from django.core.mail import EmailMultiAlternatives  
 from django.template import Context, loader  
@@ -23,7 +24,19 @@ def do_sendmail(title=u"煎茶系统邮件", msg={}, email_template="mail.html",
     except Exception, e:
         print "emaill error"
         raise e
-        
+    
 
-def do_sendsms():
-    pass
+
+def do_send_sms(mobiles, content):
+    url = 'http://www.88dx.cn/submit'
+    context = dict(
+            account='wzrx',
+            password='123456',
+            mobile=','.join(mobiles),
+            content=content,)
+    r = requests.post(url, data=context)
+    print content
+    print r.content
+    return r
+
+

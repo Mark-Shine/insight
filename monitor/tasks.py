@@ -91,10 +91,20 @@ def new_alarm(a_message, inform_teams):
     teams = inform_teams
     msg = dict(users=users, )
     #only notify team whose word is alarmed
-    contacts = Contact.objects.filter(team__in=teams).values_list("email", flat=True)
+    contacts = Contact.objects.filter(team__in=teams)
+    emails = contacts.values_list("email", flat=True)
+    mobiles = contacts.values_list("phone", flat=True)
+    #组装email信息
     msg = {"a_message": a_message}
     title = u"网站出现非法关键词警报提示！"
-    do_sendmail(msg=msg, mail_list=contacts, title=title)
+    do_sendmail(msg=msg, mail_list=emails, title=title)
+    #组装sms信息并发送
+    sms_template = u"系统内发现非法关键词:{0}，请到后台内查看【茶盒互动】"
+    words = [a['word'] for a in a_message]
+    if len(words) >= 1:
+        words = words[0]
+    content = sms_template.format(words)
+    do_send_sms(mobiles, content)
 
 
 def urldecode_to_utf8(dict_data):
@@ -111,6 +121,7 @@ def urldecode_to_utf8(dict_data):
                 raise e
         dict_data[k] = unicode_data
     return dict_data
+
 
 def transfer_dict(d_dict):
     for k, v in TRANSFER_DICT.items():
@@ -179,6 +190,8 @@ def alarm_notify(sender=None, **kwargs):
     for channel in channels:
         send_event('message', message, channel) # named channel
     return True
+
+
 
 def test_nofity():
     print "start"

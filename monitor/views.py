@@ -532,7 +532,7 @@ def delete_contact(request, pk):
         return HttpResponseRedirect(reverse("contacts"))
     contacts = get_object_or_404(Contact, id=pk)
     contacts.delete()
-    after_action.send(sender=word.__class__, 
+    after_action.send(sender=Contact.__class__, 
                 user=user, instance=contacts, 
                 action=u"删除")
     return HttpResponseRedirect(reverse("contacts"))
