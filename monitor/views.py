@@ -191,8 +191,8 @@ class WordsView(BaseView):
     def mod_content(self, ): 
         words = self.get_words(self.request)
         paged_objects, pagination = self.get_pagination(words)
-        for w in paged_objects:
-            w.count = AlarmRecord.objects.select_related().filter(word=w.id).count()
+        # for w in paged_objects:
+        #     w.count = AlarmRecord.objects.select_related().filter(word=w.id).count()
         context = {}
         context['words'] = paged_objects
         context['pagination'] = pagination

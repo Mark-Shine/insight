@@ -37,7 +37,7 @@ class AlarmRecord(models.Model):
     #端口和ip
     ip_and_port = models.CharField(max_length=32, blank=True, null=True)
     #关键字
-    word = models.IntegerField(blank=True, null=True)
+    word = models.ForeignKey("Words", blank=True, null=True)
     position = models.CharField(max_length=8, blank=True, null=True, default='')
     #状态
     state = models.IntegerField(blank=True, default=0, choices=((0, u"未处理"), (1, "已处理")))
