@@ -600,8 +600,6 @@ class SearchRecord(BaseView):
         elif format_begin:
             q = q.filter(Q(time__gte=format_begin))
         q = q.order_by("-time")
-        for r in q:
-            r.word_name = Words.objects.filter(id=r.word)[0].word
         paged_objects, pagination = self.get_pagination(q)
         context['records'] = paged_objects
         context['pagination'] = pagination
