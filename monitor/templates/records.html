@@ -57,7 +57,7 @@
           <td>{{r.time|date:"Y-m-d H:i"}}</td>
           <td>{{r.user_name}}</td>
           <td>{{r.ip_and_port}}</td>
-          <td><a href="{%url 'word2recod' pk=r.word %}">{{r.word_name}}</a></td>
+          <td><a href="{%url 'word2recod' pk=r.word.id %}">{{r.word.word}}</a></td>
           <td><a href="{{r.url}}" target="view_window" >打开</a></td>
           <td>
             <form class="form-inline "action="{%url 'update_record_state'%}?next={% url 'records' %}" method="POST">

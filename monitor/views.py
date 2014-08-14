@@ -282,8 +282,6 @@ class RecordViews(BaseView):
         team_words = self.get_words(self.request).values_list("id", flat=True)
         records = AlarmRecord.objects.select_related().filter(word__in=team_words).order_by("-time",)
         paged_objects, pagination = self.get_pagination(records)
-        for r in paged_objects:
-            r.word_name = Words.objects.filter(id=r.word)[0].word
         page_html = self.include(
             self.template_name, {"records": paged_objects, "pagination": pagination})
         return page_html

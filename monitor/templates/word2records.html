@@ -29,7 +29,7 @@
           <td><a href="{{r.url}}" target="view_window" >地址</a></td>
           <td>{{r.ip_and_port}}</td>
           <td>
-            <form class="form-inline "action="{%url 'update_record_state'%}?next={%url 'word2recod' pk=r.word %}" method="POST">
+            <form class="form-inline "action="{%url 'update_record_state'%}?next={%url 'word2recod' pk=r.word.id %}" method="POST">
             {%csrf_token%}
               <div class="form-group">
               <input class="hidden" value="{{r.id}}" name="pk">
