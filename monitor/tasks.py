@@ -151,6 +151,8 @@ def filter_task(post_data):
         if form.is_valid():
             cleaned_data = form.cleaned_data
             cleaned_data['site'] = site
+            word_set = Words.objects.filter(id=int(cleaned_data['word']))
+            cleaned_data["word"] =  word_set and word_set[0]
             result.append(AlarmRecord(**cleaned_data))
     
     #批量创建记录
