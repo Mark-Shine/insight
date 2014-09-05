@@ -144,15 +144,16 @@ def filter_task(post_data):
         if flag:
             post['word'] = int(char_id)
             a_message.append(post)
-            
+
         _post = transfer_dict(post)
         form = PostRecordForm(_post)
         site = Sites.objects.filter(ip=_post['site_ip'])[0]
         if form.is_valid():
             cleaned_data = form.cleaned_data
             cleaned_data['site'] = site
-            word_set = Words.objects.filter(id=int(cleaned_data['word']))
-            cleaned_data["word"] =  word_set and word_set[0]
+            if cleaned_data.get('word'):
+                word_set = Words.objects.filter(id=cleaned_data['word'])
+                cleaned_data["word"] = word_set and word_set[0]
             result.append(AlarmRecord(**cleaned_data))
     
     #批量创建记录
